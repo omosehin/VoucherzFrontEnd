@@ -1,0 +1,28 @@
+.MuiInputLabel-animated-223 {
+  margin-left:40px;
+}
+
+
+  @media only screen  and (min-width : 1224px) {
+    .MuiButton-contained-93.MuiButton-disabled-102{
+      margin-left:200px;
+      margin-top: 50px;
+      margin-bottom: 10px;
+    }
+    .SignUp{
+      text-align:center;
+    }
+}
+@media screen and (max-width: 600px) {
+  .SignUp{
+    text-align:center;
+  
+  }
+  .MuiButton-contained-93.MuiButton-disabled-102{
+    
+    margin-top: 100px;
+    margin-bottom: 20px;
+    margin-left: 10px
+   
+  }
+}

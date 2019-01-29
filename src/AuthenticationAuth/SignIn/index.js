@@ -17,7 +17,7 @@ import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
 import * as ROUTES from '../../constants/routes';
-import AppBar from '../../Components2/Navigation/AppBar'
+import AppBar from '../Navigation/AppBar'
 
 const styles = theme => ({
   main: {

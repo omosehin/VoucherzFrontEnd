@@ -13,7 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import { withStyles } from '@material-ui/core/styles';
 import background from './background.jpg';
 import './HomePage.css';
-import AppBar from '../../Components2/Navigation/AppBar';
+import AppBar from '../Navigation/AppBar';
 
 
 const styles = theme => ({

@@ -4,8 +4,6 @@ import Avatar from '@material-ui/core/Avatar';
 import Button from '@material-ui/core/Button';
 import CssBaseline from '@material-ui/core/CssBaseline';
 import FormControl from '@material-ui/core/FormControl';
-//import FormControlLabel from '@material-ui/core/FormControlLabel';
-//import Checkbox from '@material-ui/core/Checkbox';
 import Input from '@material-ui/core/Input';
 import InputLabel from '@material-ui/core/InputLabel';
 import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
@@ -13,12 +11,9 @@ import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
 import { Link, withRouter } from 'react-router-dom';
-//import { FirebaseContext } from '../Firebase';
-// import { withFirebase } from '../Firebase';
 import * as ROUTES from '../../constants/routes';
-//import '../Css/Registration.css';
 import {compose} from 'recompose';
-import AppBar from '../../Components2/Navigation/AppBar';
+import AppBar from '../Navigation/AppBar';
 import axios from 'axios'
 
 const styles = theme => ({

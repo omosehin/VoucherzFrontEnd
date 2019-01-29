@@ -9,7 +9,7 @@ import CardHeader from "../../../components/Card/CardHeader";
 import CardBody from "../../../components/Card/CardBody";
 
 import iconsStyle from "../../../assets/jss/material-dashboard-react/views/iconsStyle";
-import GiftVoucherForm from "../../Vourcher/CreateVoucher/GiftVoucher/GiftVoucherForm";
+// import GiftVoucherForm from "../../Vourcher/CreateVoucher/GiftVoucher/GiftVoucherForm";
 
 function Icons(props) {
   const { classes } = props;
@@ -31,7 +31,7 @@ function Icons(props) {
             </p>
           </CardHeader>
          <CardBody>
-           <GiftVoucherForm/>
+           {/* <GiftVoucherForm/> */}
           </CardBody>
         </Card>
       </GridItem>

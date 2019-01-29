@@ -117,7 +117,6 @@ class SignInFormBase extends Component {
             <FormControl margin="normal" required fullWidth>
               <InputLabel htmlFor="email">Email Address</InputLabel>
               <Input
-                name="email"
                 id="email"
                 value={email}
                 onChange={this.onChange}

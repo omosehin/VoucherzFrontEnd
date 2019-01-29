@@ -123,7 +123,6 @@ class PasswordForgetFormBase extends Component {
                       </FormControl>
 
         <Button 
-          disabled={isInvalid} 
           fullWidth
               variant="contained"
               disabled={isInvalid}

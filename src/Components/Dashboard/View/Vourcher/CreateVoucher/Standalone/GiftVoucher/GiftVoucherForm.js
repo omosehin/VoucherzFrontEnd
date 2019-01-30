@@ -9,55 +9,17 @@ import Button from "../../../../../components/Forms/Button"
 import axios from "axios";
 
 
-const styles = {
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0"
-  },
-  cardTitleWhite: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    // alignItems: 'flex-end',
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none"
-  },
-  menu: {
-    width: 400,
-  },
-  textField: {
-    // marginLeft: theme.spacing.unit,
-    // marginRight: theme.spacing.unit,
-    width:'100%',
-  },
-  icon: {
-    margin: 5,
-  },
-  form: {
-   width: '100%', // Fix IE 11 issue.
-  },
 
-};
-const buttonStyle = {
-   backgroundColor:"#972FAF",
-   color:"white",
-  };
 
     
 class GiftVourcherForm extends Component {
   state={
       newUser:{
-        amount:"",
+        value:"",
         charset: "",
         voucherType: "Gift",
         length:"",
+        category:"",
         prefix:"",
         postfix:"",
         pattern:"",
@@ -119,52 +81,24 @@ class GiftVourcherForm extends Component {
     );
   }
 
-  
-  // handleFormSubmit=(e)=>{
-  //     e.preventDefault();
-  //     let userData=[this.state.newUser]
-  //     let userBData=[this.state.voucherType];
-  //     let giftDataVoucher=userData.concat(userBData)   
-  //     console.log(giftDataVoucher);
-  //     let data=giftDataVoucher;
-     
-  //       Axios.post("http://172.20.20.17:9100/api/voucher/create",data)
-  //       .then(response=>{
-  //         console.log(response + "successful")
-  //             })   
-  //             .catch(function (error) {
-  //               console.log(error);
-  //             });
-
-  // }
+ 
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    let userData=[this.state.newUser]
+    let userData=this.state.newUser
     console.log(userData);
-
-      axios({
-          method:"post",
-          url:"http(s)://5c4ae17caa8ee500142b4827.mockapi.io/api/v1/usercreation/",
-          mode: 'no-cors',
-          body:JSON.stringify(userData),
-          header:{
-              'Accept':"application/json",
-              "Content-Type":"application/json"
-          }
+    axios.post(`http://172.20.20.17:8080/api/voucher/single/gift/create`,  userData )
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
       })
-      .then(response=>{
-          response.json()
-      .then(data=>{console.log("Successful" + data)
-          });
+      .catch((error)=>{
+        console.log(error)
       })
-
-      // .catch(error=>{
-      //   notification.error({
-      //     message:"Voucher Created",
-      //         description:"error"
-      //   })
-      // })
+     
 }
+
+
+
 
  
 
@@ -172,15 +106,16 @@ class GiftVourcherForm extends Component {
       e.preventDefault();
       this.setState({
           newUser:{
-            amount:"",
+            value:"",
             charset: "",
+            category:"",
             length:"",
             prefix:"",
             postfix:"",
             pattern:"",
             startDate:"",
             expirationDate:"",
-            additionInfo:"",
+            additionalInfo:"",
           }
       });
   }
@@ -188,9 +123,9 @@ class GiftVourcherForm extends Component {
 
   render(){
     
-    const { amount, prefix} = this.state.newUser;
+    const { value, prefix} = this.state.newUser;
     const isEnabled =
-    amount.length < 0 &&
+    value.length < 0 &&
     prefix.length < 0 ;
 
     return (
@@ -200,22 +135,22 @@ class GiftVourcherForm extends Component {
                 <Grid container spacing={24} justify = "center">
                 <Grid xs={12} md={5} style={{margin:"3px"}} >
                   <Input
+                    inputType={"hidden"}
                      required={"required"}
                      readonly={'readonly'}
-                    title={"Voucher Type"}
                     value={this.state.newUser.voucherType}
                     fullWidth
 
                   >
                   </Input>
                 </Grid >
-                <Grid xs={12} md={5}>
+                <Grid xs={12} md={10}>
                   <Input
                     required
                     inputType={"number"}                  
                     title={"Voucher Value"}
-                    name={"amount"}
-                    value={this.state.newUser.amount}
+                    name={"value"}
+                    value={this.state.newUser.value}
                     fullWidth
                     placeholder={"Enter your Voucher Value in Naira"}
                     handleChange={this.VoucherhandleInput}
@@ -246,6 +181,19 @@ class GiftVourcherForm extends Component {
                   >
                   </Input>
                   </Grid >  
+                  <Grid xs={12} md={5}  style={{margin:"3px"}}>
+                  <Input 
+                    required={"required"}
+                    // inputType={"number"}
+                     title={"Category"}
+                    name={"category"}
+                    value={this.state.newUser.category}
+                    fullWidth
+                    placeholder={"Enter Voucher categorye.g Valentine "}
+                    handleChange={this.VoucherDateCharsethandleInput}
+                  >
+                  </Input>
+                  </Grid>
                   <Grid xs={12} md={5}  style={{margin:"3px"}}>
                   <Input
                     required
@@ -318,12 +266,12 @@ class GiftVourcherForm extends Component {
                   </Grid > 
                   <Grid xs={12} md={10}>
                   <TextArea
-                     title={"additionInfo Information"}
+                     title={"additionalInfo Information"}
                      rows={10}
-                     value={this.state.newUser.additionInfo}
+                     value={this.state.newUser.additionalInfo}
                      name={"currentPetInfo"}
                      handleChange={this.handleTextArea}
-                     placeholder={"additionInfo Information"}
+                     placeholder={"additionalInfo Information"}
         />
                   </Grid>
                  
@@ -356,3 +304,44 @@ class GiftVourcherForm extends Component {
 }
 
 export default withStyles(styles)(GiftVourcherForm);
+
+const styles = {
+  cardCategoryWhite: {
+    color: "rgba(255,255,255,.62)",
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    marginBottom: "0"
+  },
+  cardTitleWhite: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    // alignItems: 'flex-end',
+    color: "#FFFFFF",
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none"
+  },
+  menu: {
+    width: 400,
+  },
+  textField: {
+    // marginLeft: theme.spacing.unit,
+    // marginRight: theme.spacing.unit,
+    width:'100%',
+  },
+  icon: {
+    margin: 5,
+  },
+  form: {
+   width: '100%', // Fix IE 11 issue.
+  },
+
+};
+const buttonStyle = {
+   backgroundColor:"#972FAF",
+   color:"white",
+  };

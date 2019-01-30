@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {Component} from 'react';
 import { BrowserRouter as Router,Route } from 'react-router-dom';
 // import Navigation from '../../AuthenticationAuth/Navigation/AppBar';
 // import LandingPage from '../../AuthenticationAuth/Home';
@@ -13,11 +13,39 @@ import { BrowserRouter as Router,Route } from 'react-router-dom';
 // import { withAuthentication } from '../../AuthenticationAuth/Session';
 import Dashboard from '../../Components/Dashboard/Layout/Dashboard/Dashboard';
 // import DiscountVoucherForm from '../Dashboard/View/Vourcher/CreateVoucher/DiscountVoucher/DiscountVoucherForm';
+// import Toolbar from "../../Toolbar/Toolbar"
+// import SideDrawer from '../../SideDrawer/SideDrawer';
+// import Backdrop from '../../Backdrop/Backdrop';
 
 
-const App = ()=>(
+class App extends Component{
+  state={
+      sideDrawerOpen:false
+  };
+  // drawerToggleClickedHandler=()=>{
+  //   this.setState((prevState)=>{
+  //     return {sideDrawerOpen:!prevState.sideDrawerOpen};
+  //   });
+  // };
+
+  // backdropClicked=()=>{
+  //   this.setState({sideDrawerOpen:false})
+  // };
+  render(){
+    // let backdrop;
+
+    //     if (this.state.sideDrawerOpen) {
+    //       backdrop=<Backdrop click={this.backdropClicked}/>
+    // }
+    return(
 <Router>
-    <div>
+    <div style={{height:'100%'}}>
+      {/* <Toolbar drawerClickedHandler={this.drawerToggleClickedHandler}/>
+      <SideDrawer show={this.state.sideDrawerOpen}/>
+      {backdrop}
+      <main style={{marginTop:'64px'}}>
+      <p>This is the page co ntent</p> 
+      </main> */}
         {/* <Route exact path={ROUTES.LANDING} component={HomePage} />
       <Route exact path={ROUTES.SIGN_UP} component={SignUpPage} />
       <Route exact path={ROUTES.SIGN_IN} component={SignInPage} />
@@ -37,6 +65,7 @@ const App = ()=>(
     </div>
   </Router>
     );
- 
+    }
+  }
 
 export default App;

@@ -19,6 +19,9 @@ const Input = props => {
         readonly={props.readonly}
         disabled={props.disabled}
         required={props.required}
+        display={props.display}
+        hidden={props.hidden}
+        validatemail={props.validatemail}
         {...props}
       />
     </div>

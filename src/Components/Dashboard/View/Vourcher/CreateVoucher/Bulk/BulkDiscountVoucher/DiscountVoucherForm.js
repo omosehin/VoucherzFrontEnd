@@ -9,28 +9,18 @@ import Button from "../../../../../components/Forms/Button"
 import axios from "axios";
 
 
-  
-
-const styles = {
-
-  form: {
-   width: '100%', // Fix IE 11 issue.
-  },
-
-};
-const buttonStyle = {
-   backgroundColor:"#972FAF",
-   color:"white",
-  };
 
     
 class DiscountVoucherForm extends Component {
   state={
       newUser:{
         discountType:"",
-        voucherType: "Bulk",
+        voucherType: "Discount_Bulk",
+        discountValue:"",
+        numberOfCodeToGenerate:"",
+        percentage:"",
         amount:"",
-        quantity:"",
+        category:"",
         charset: "",
         length:"",
         prefix:"",
@@ -42,16 +32,15 @@ class DiscountVoucherForm extends Component {
       },
       discountTypes:["Percentage","Amount","Unit"],
       charsetOptions:["Numbers","Alphabet","Alphanumeric"],
-      disabled:false,
-      display:false,
+      disabled:false
   }
 
-  handleEnable=()=>{
-    this.setState({display:this.state.display})
-
-  }
   handleDisable=()=>{
-      this.setState({disabled:!this.state.disabled})
+    this.setState((prevState)=>{
+      return(
+        ({disabled:!prevState.disabled})
+      );
+    })
   }
 
   VoucherhandleInput=(e) =>{
@@ -66,7 +55,7 @@ class DiscountVoucherForm extends Component {
             [name]: value
           }
         }),
-        () => console.log(this.state.newUser)
+        // () => console.log(this.state.newUser)
       );
     }
   }
@@ -82,10 +71,26 @@ class DiscountVoucherForm extends Component {
               [name]: value
             }
           }),
-          () => console.log(this.state.newUser)
+          // () => console.log(this.state.newUser)
         );
       }
       
+      VoucherPercenthandleInput=(e) =>{
+        let value = e.target.value;
+        let name = e.target.name;
+        const validateinput = /^[1-9]$|^[1-9][0-9]$|^(100)$/;
+        if (e.target.value === "" || validateinput.test(e.target.value)){
+          this.setState(
+            prevState => ({
+              newUser: {
+                ...prevState.newUser,
+                [name]: value
+              }
+            }),
+            () => console.log(this.state.newUser)
+          );
+        }
+      }
   
 
   handleTextArea=(e)=>{
@@ -98,36 +103,45 @@ class DiscountVoucherForm extends Component {
           additionInfo: value
         }
       }),
-      () => console.log(this.state.newUser)
+      // () => console.log(this.state.newUser)
     );
   }
 
-  
-  handleFormSubmit=(e)=>{
-      e.preventDefault();
-      let userData=[this.state.newUser];
-      console.log(userData);
 
-      axios.post("http://demo5882170.mockable.io/value_Voucher",userData)
-      .then(response=>{
-        console.log(response + "successful")
-        alert("Successful")
-            })   
-      .catch(  (error) => {
-         console.log(error)
-      })
-       
-  }
+  handleFormSubmit=(e)=>{
+    e.preventDefault();
+    let userData=[this.state.newUser];
+    console.log(userData);
+    axios({
+      method:"post",
+      url:"http://172.20.20.17:8080/api/voucher/bulk/discount/create",
+      mode: 'no-cors',
+      body:JSON.stringify(userData),
+      header:{
+          'Accept':"application/json",
+          "Content-Type":"application/json"
+      }
+  })
+  .then(response=>{
+    console.log(response);
+  })
+  .catch( error=> {
+    console.log(error);
+  });
+
+}
  
 
   handleClearForm=(e)=>{
       e.preventDefault();
       this.setState({
           newUser:{
+            discountValue:"",
+            percentage:"",
             amount:"",
-            percentageAmount:"",
             charset: "",
             length:"",
+            category:"",
             prefix:"",
             postfix:"",
             pattern:"",
@@ -141,10 +155,13 @@ class DiscountVoucherForm extends Component {
 
   render(){
     
-    const { amount, prefix} = this.state.newUser;
-    const isEnabled =
-    amount.length < 0 &&
-    prefix.length < 0 ;
+    const { discountValue, prefix,postfix,amount,percentage} = this.state.newUser;
+    const isInvalid  =
+    discountValue===''||
+    postfix===''||
+    prefix===''||
+    amount===''||
+    percentage==='';
 
     return (
       
@@ -169,13 +186,28 @@ class DiscountVoucherForm extends Component {
                   <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
                     required={"required"}
-                    disabled={(this.state.newUser.discountType==="Percentage" || this.state.newUser.discountType==="Amount")? "" : "disabled"}
+                    disabled={(this.state.newUser.discountType==="Percentage")? "" : "disabled"}
                     inputType={"number"}                  
-                    title={"Voucher in % or Amount"}
-                    name={"percentageAmount"}
-                    value={this.state.newUser.percentageAmount}
+                    title={"Discount Value"}
+                    name={"percentage"}
+                    value={this.state.newUser.percentage}
                     fullWidth
-                    placeholder={"% or amount(#)"}
+                    placeholder={"Voucher value in Percentage (1-100%)"}
+                    handleChange={this.VoucherPercenthandleInput}
+                  >
+                  </Input>
+                  </Grid >
+
+                  <Grid xs={12} md={5} style={{margin:"3px"}}>
+                  <Input
+                    required={"required"}
+                    disabled={(this.state.newUser.discountType==="Amount")? "" : "disabled"}
+                    inputType={"number"}                  
+                    title={"Discount Value"}
+                    name={"percentage"}
+                    value={this.state.newUser.amount}
+                    fullWidth
+                    placeholder={"Voucher value in amount"}
                     handleChange={this.VoucherhandleInput}
                   >
                   </Input>
@@ -185,27 +217,27 @@ class DiscountVoucherForm extends Component {
                   <Input
                      required={"required"}
                      disabled={(this.state.newUser.discountType==="Unit")? "" : "disabled"}
-                     inputType={"text"}                  
-                    title={"Voucher Value for unit"}
-                    name={"amount"}
-                    value={this.state.newUser.amount}
+                     inputType={"number"}                  
+                    title={"Discount Value"}
+                    name={"discountValue"}
+                    value={this.state.newUser.discountValue}
                     fullWidth
                     placeholder={"Enter your Voucher Value in Naira(#)"}
                     handleChange={this.VoucherDateCharsethandleInput}
                   >
                   </Input>
                   </Grid >
-                  <Grid xs={12} md={5} style={{margin:"3px"}} >
+                  {/* <Grid xs={12} md={5} style={{margin:"3px"}} > */}
                   <Input
+                    inputType={'hidden'}
                      required={"required"}
                      readonly={'readonly'}
-                    title={"Voucher Type"}
                     value={this.state.newUser.voucherType}
                     fullWidth
 
                   >
                   </Input>
-                  </Grid >
+                  {/* </Grid > */}
                   
                 <Grid   xs={12} md={5} style={{margin:"3px"}}>
                 <Select
@@ -233,13 +265,26 @@ class DiscountVoucherForm extends Component {
                   </Input>
                   </Grid >  
 
+                  <Grid xs={12} md={5}  style={{margin:"3px"}}>
+                  <Input 
+                    required={"required"}
+                    // inputType={"number"}
+                     title={"Category"}
+                    name={"category"}
+                    value={this.state.newUser.category}
+                    fullWidth
+                    placeholder={"Enter Voucher categorye.g Valentine "}
+                    handleChange={this.VoucherDateCharsethandleInput}
+                  >
+                  </Input>
+                  </Grid> 
                   <Grid xs={12} md={5}  style={{margin:"3px"}} >
                   <Input
                     required
                     inputType={"number"}                  
                     title={"Voucher Quantity"}
-                    name={"quantity"}
-                    value={this.state.newUser.quantity}
+                    name={"numberCodeToGenerate"}
+                    value={this.state.newUser.numberOfCodeToGenerate}
                     fullWidth
                     placeholder={"Enter your Voucher quantity"}
                     handleChange={this.VoucherhandleInput}
@@ -330,7 +375,7 @@ class DiscountVoucherForm extends Component {
                  
           <Grid xs={4} md={4}style={{margin:"3px"}}>
                   <Button
-                  disabled={!isEnabled}
+                  disabled={isInvalid}
                           action={this.handleFormSubmit}                           
                             title={"Submit"}
                style={buttonStyle}/>
@@ -357,3 +402,17 @@ class DiscountVoucherForm extends Component {
 }
 
 export default withStyles(styles)(DiscountVoucherForm);
+
+  
+
+const styles = {
+
+  form: {
+   width: '100%', // Fix IE 11 issue.
+  },
+
+};
+const buttonStyle = {
+   backgroundColor:"#972FAF",
+   color:"white",
+  };

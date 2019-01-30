@@ -9,58 +9,23 @@ import Button from "../../../../../components/Forms/Button"
 import axios from "axios";
 
 
-const styles = {
-  cardCategoryWhite: {
-    color: "rgba(255,255,255,.62)",
-    margin: "0",
-    fontSize: "14px",
-    marginTop: "0",
-    marginBottom: "0"
-  },
-  cardTitleWhite: {
-    display: 'flex',
-    justifyContent: 'flex-end',
-    // alignItems: 'flex-end',
-    color: "#FFFFFF",
-    marginTop: "0px",
-    minHeight: "auto",
-    fontWeight: "300",
-    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
-    marginBottom: "3px",
-    textDecoration: "none"
-  },
-  menu: {
-    width: 400,
-  },
-  
-  icon: {
-    margin: 5,
-  },
-  form: {
-   width: '100%', // Fix IE 11 issue.
-  },
-
-};
-const buttonStyle = {
-   backgroundColor:"#972FAF",
-   color:"white",
-  };
 
     
 class ValueVoucherForm extends Component {
   state={
       newUser:{
-        voucherType:"Value_Bulk",
+        voucherType:"Value",
         amount:"",
-        quantity:"",
+        numberOfCodeToGenerate:"",
         charset: "",
         length:"",
+        category:"",
         prefix:"",
         postfix:"",
         pattern:"",
         startDate:"",
         expirationDate:"",
-        additionInfo:"",
+        additionalInfo:"",
       },
       charsetOptions:["Numbers","Alphabet","Alphanumeric"],
       
@@ -79,7 +44,6 @@ class ValueVoucherForm extends Component {
             [name]: value
           }
         }),
-        () => console.log(this.state.newUser)
       );
     }
   }
@@ -87,7 +51,6 @@ class ValueVoucherForm extends Component {
     VoucherDateCharsethandleInput=(e) =>{
       let value = e.target.value;
       let name = e.target.name;
-      
         this.setState(
           prevState => ({
             newUser: {
@@ -95,7 +58,6 @@ class ValueVoucherForm extends Component {
               [name]: value
             }
           }),
-          () => console.log(this.state.newUser)
         );
       }
       
@@ -108,27 +70,27 @@ class ValueVoucherForm extends Component {
       prevState => ({
         newUser: {
           ...prevState.newUser,
-          additionInfo: value
+          additionalInfo: value
         }
       }),
-      () => console.log(this.state.newUser)
     );
   }
 
   
   handleFormSubmit=(e)=>{
-      e.preventDefault();
-      let userData=[this.state.newUser];    
-      console.log( userData)
-      axios.post("http://demo5882170.mockable.io/value_Voucher",userData)
-        .then(response=>{
-          console.log(response + "successful")
-              })   
-        .catch(  error => {
-          const response = error.response
-          console.log(response)
-        })
-  }
+    e.preventDefault();
+    let userData=this.state.newUser
+    console.log(userData);
+    axios.post(`http://172.20.20.17:8080/api/voucher/bulk/value/create`,  userData )
+      .then(res => {
+        console.log(res);
+        console.log(res.data);
+      })
+      .catch((error)=>{
+        console.log(error)
+      })
+     
+}
  
 
   handleClearForm=(e)=>{
@@ -136,15 +98,16 @@ class ValueVoucherForm extends Component {
       this.setState({
           newUser:{
             amount:"",
-            quantity:"",
+            numberOfCodeToGenerate:"",
             charset: "",
             length:"",
+            category:"",
             prefix:"",
             postfix:"",
             pattern:"",
             startDate:"",
             expirationDate:"",
-            additionInfo:"",
+            additionalInfo:"",
           }
       });
   }
@@ -162,16 +125,14 @@ class ValueVoucherForm extends Component {
           <CardBody>
     <form className="container-fluid" onSubmit={this.handleFormSubmit}>
                 <Grid container spacing={24} justify = "center">
-                  <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
+                  inputType={'hidden'}
                     required
-                    title={"Voucher Type"}
                     value={this.state.newUser.voucherType}
                     fullWidth
                     readonly={'readonly'}
                   >
                   </Input>
-                  </Grid >
                   <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
                     required
@@ -191,8 +152,8 @@ class ValueVoucherForm extends Component {
                     required
                     inputType={"number"}                  
                     title={"Voucher Quantity"}
-                    name={"quantity"}
-                    value={this.state.newUser.quantity}
+                    name={"numberOfCodeToGenerate"}
+                    value={this.state.newUser.numberOfCodeToGenerate}
                     fullWidth
                     placeholder={"Enter your Voucher quantity"}
                     handleChange={this.VoucherhandleInput}
@@ -223,6 +184,19 @@ class ValueVoucherForm extends Component {
                   >
                   </Input>
                   </Grid >  
+                  <Grid xs={12} md={5}  style={{margin:"3px"}}>
+                  <Input 
+                    required={"required"}
+                    // inputType={"number"}
+                     title={"Category"}
+                    name={"category"}
+                    value={this.state.newUser.category}
+                    fullWidth
+                    placeholder={"Enter Voucher categorye.g Valentine "}
+                    handleChange={this.VoucherDateCharsethandleInput}
+                  >
+                  </Input>
+                  </Grid> 
                   <Grid xs={12} md={5}  style={{margin:"3px"}}>
                   <Input
                     required
@@ -295,12 +269,12 @@ class ValueVoucherForm extends Component {
                   </Grid > 
                   <Grid xs={12} md={10}>
                   <TextArea
-                     title={"AdditionInfo Information"}
+                     title={"additionalInfo Information"}
                      rows={10}
-                     value={this.state.newUser.additionInfo}
+                     value={this.state.newUser.additionalInfo}
                      name={"currentPetInfo"}
                      handleChange={this.handleTextArea}
-                     placeholder={"AdditionInfo Information"}
+                     placeholder={"v Information"}
         />
                   </Grid>
                  
@@ -333,3 +307,42 @@ class ValueVoucherForm extends Component {
 }
 
 export default withStyles(styles)(ValueVoucherForm);
+
+
+
+const styles = {
+  cardCategoryWhite: {
+    color: "rgba(255,255,255,.62)",
+    margin: "0",
+    fontSize: "14px",
+    marginTop: "0",
+    marginBottom: "0"
+  },
+  cardTitleWhite: {
+    display: 'flex',
+    justifyContent: 'flex-end',
+    // alignItems: 'flex-end',
+    color: "#FFFFFF",
+    marginTop: "0px",
+    minHeight: "auto",
+    fontWeight: "300",
+    fontFamily: "'Roboto', 'Helvetica', 'Arial', sans-serif",
+    marginBottom: "3px",
+    textDecoration: "none"
+  },
+  menu: {
+    width: 400,
+  },
+  
+  icon: {
+    margin: 5,
+  },
+  form: {
+   width: '100%', // Fix IE 11 issue.
+  },
+
+};
+const buttonStyle = {
+   backgroundColor:"#972FAF",
+   color:"white",
+  };

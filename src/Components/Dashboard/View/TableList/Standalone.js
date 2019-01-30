@@ -27,7 +27,7 @@ class StandalonTable extends Component{
 
 
         componentDidMount(){
-        axios.get("http://demo5882170.mockable.io/create",{
+        axios.get("http://172.20.20.17:8080/api/voucher/search/*/gift",{
           responseType: 'json'
       })
         .then(response=>{
@@ -59,11 +59,13 @@ class StandalonTable extends Component{
               <TableRow style={{backgroundColor:'#972FB0',color:'white'}}>
                 <TableCell  style={{color:'white',fontSize:'15px'}}>Id</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>VoucherType</TableCell>
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Amount</TableCell>
+                {/* <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Amount</TableCell> */}
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Start Date</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Expiration Date</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Voucher Code</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Status</TableCell>
+                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Category</TableCell>
+                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>value</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}></TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}></TableCell>
 
@@ -77,11 +79,13 @@ class StandalonTable extends Component{
                 <TableRow key={user.merchantId}>
                   <TableCell  style={{fontSize:'12px'}}>{user.merchantId}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.amount}</TableCell>
+                  {/* <TableCell align="right"  style={{fontSize:'12px'}}>{user.amount}</TableCell> */}
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.startDate}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.expirationDate}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.Code}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.Status}</TableCell>
+                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.code}</TableCell>
+                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.status}</TableCell>
+                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.category}</TableCell>
+                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.value}</TableCell>
                   <TableCell align="left"  style={{marginLeft:'-12px'}}>
                   <Button variant="contained" className={classes.button}>
                       Enable

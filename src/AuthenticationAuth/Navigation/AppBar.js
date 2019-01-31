@@ -24,11 +24,27 @@ const styles = theme => ({
   toolbarTitle: {
     flex: 1,
   },
+
+  toolbar:{
+    display: 'flex',
+    alignItems:'center',
+    padding:"20px",
+  },
   NavLinkbutton:{
         display:'flex',
+        alignItems:'center',
+        padding:"0 1rem",
+        
     
-        marginLeft: 'auto'
+        // marginLeft: 'auto'
   },
+  toolbarLogo:{
+    color:'white',
+    fontSize:'1.5rem',
+  },
+  spacer:{
+    flex:1,
+},
   
   card: {
     marginTop:100,
@@ -61,18 +77,29 @@ function Navigation(props) {
     <React.Fragment>
       <CssBaseline />
       <AppBar color="default" className={classes.appBar}>
-        <Toolbar>
+        <Toolbar  className={classes.toolbar}>
+        <div  className={classes.toolbarLogo}>
         <NavLink to={ROUTES.LANDING}>
             VOURCHERZ
-        </NavLink>     
-        <div className={classes.NavLinkbutton}>
-        <Button color="primary" variant="outlined">
-          <NavLink to={ROUTES.SIGN_UP}>Sign up</NavLink>
-          </Button>
-
-          <Button color="primary" variant="outlined">
-          <NavLink to={ROUTES.SIGN_IN}>Sign In</NavLink>
-          </Button>    
+        </NavLink>
+        </div>  
+        <div className={classes.spacer}/>
+   
+        <div className={classes.NavLinkbutton} >
+        <div>
+          <NavLink to={ROUTES.SIGN_UP}>
+            <Button color="primary" variant="outlined" >
+              Sign up
+              </Button>
+          </NavLink>
+        </div>
+        <div> 
+          <NavLink to={ROUTES.SIGN_IN}>
+            <Button color="primary" variant="outlined"  style={{marginLeft:'30px'}}>
+            Sign In
+            </Button> 
+          </NavLink> 
+          </div>
         </div>    
          
          

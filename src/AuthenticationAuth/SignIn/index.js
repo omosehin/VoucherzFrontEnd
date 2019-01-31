@@ -12,7 +12,8 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { withRouter } from 'react-router-dom';
+import {Link, withRouter , Redirect} from 'react-router-dom';
+import axios from 'axios';
 import { compose } from 'recompose';
 import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
@@ -62,106 +63,164 @@ const SignInPage = () => (
   </div>
 );
 
-const INITIAL_STATE = {
-  email: '',
-  password: '',
-  error: null,
-};
+// const INITIAL_STATE = {
+//   email: '',
+//   password: '',
+//   error: null,
+// };
 
-class SignInFormBase extends Component {
+ class SignInFormBase extends Component {
   constructor(props) {
     super(props);
-    this.state = { ...INITIAL_STATE };
+    this.state = { 
+      email:"",
+      password:'',
+
+
+    };
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+
+     
+  }
+  onChange = (e) => {
+    // Because we named the inputs to match their corresponding values in state, it's
+    // super easy to update the state
+    const state = this.state
+    state[e.target.name] = e.target.value;
+    this.setState(state);
+}
+
+onSubmit = (e) => {
+  e.preventDefault();
+              document.getElementById("buttonShipper").innerHTML = "signing you in...";
+  // get our form data out of state
+  var apiBaseUrl = 'http://172.20.20.21:8085/api/auth/signin';
+
+  const {  email, password  } = this.state;
+  
+  let data = {
+      email,
+      password,  
   }
 
-  onSubmit = event => {
+  console.log(JSON.stringify(data));
+  
+  
+  axios.post(apiBaseUrl, data, {
+      data: JSON.stringify(data),
+           
+  }).then((response) => {
 
-    const { email, password } = this.state;
+    //access the results here....
+    // alert(result);
+    // console.log(response);
+    if(response.data.result && response.data.result.accessToken){
+      sessionStorage.setItem('data',response.data.result.accessToken);
+      this.setState({redirectToReferrer: true});
+      //  this.props.history.push({pathname: '/dashboard'})
 
-    this.props.firebase
-      .doSignInWithEmailAndPassword(email, password)
-      .then(() => {
-        if((this.state.password && this.state.email).trim() === "")return;
-        this.setState({ ...INITIAL_STATE });
-        this.props.history.push(ROUTES.HOME);
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
-      event.preventDefault();
+        // console.log(response);
+        // alert(response.data.result.message);
+        // document.getElementById("buttonShipper").innerHTML = "success";
+        
+    }
+    // else{
+    //     //alert(response.data);
+    //     document.getElementById("buttonShipper").innerHTML = "failed try again1..."
+    //   }
+})
+.catch(function (error) {
+    alert("failed to complete");
+    document.getElementById("buttonShipper").innerHTML = "failed try again2...";
+    //console.log('error got' + error);
+    // this.props.history.push('/signin')
 
-  };
+});   
+}
 
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
 
-  render() {
-    const { email, password, error } = this.state;
-    const { classes } = this.props;
+render() {
 
-    const isInvalid = password === '' || email === '';
+  if (this.state.redirectToReferrer){
+      
+    return (<Redirect to={'/dashboard'}/>)
+    }
+    if (sessionStorage.getItem('data')){
+    
+        return (<Redirect to={'/dashboard'}/>)
+    }
+  
+  // const { email, password, error } = this.state;
+  const { classes } = this.props;
 
-    return (
-      <main className={classes.main}>
-        <CssBaseline />
+  // const isInvalid = password === '' || email === '';
 
-        <Paper className={classes.paper}>
-          <Avatar className={classes.avatar}>
-            <LockOutlinedIcon />
-          </Avatar>
-          <Typography component="h1" variant="h5">
-            Sign in
-          </Typography>
-          <form className={classes.form} onSubmit={this.onSubmit}>
-            <FormControl margin="normal" required fullWidth>
-              <InputLabel htmlFor="email">Email Address</InputLabel>
-              <Input
-                id="email"
-                value={email}
-                onChange={this.onChange}
-                type="text"
-                placeholder="Email Address"
-                name="email"
-                autoComplete="email"
-                autoFocus
-              />
+  return (
+    <main className={classes.main}>
+      <CssBaseline />
+
+      <Paper className={classes.paper}>
+        <Avatar className={classes.avatar}>
+          <LockOutlinedIcon />
+        </Avatar>
+        <Typography component="h1" variant="h5">
+          Sign in
+        </Typography>
+        <form className={classes.form} onSubmit={this.onSubmit}>
+          <FormControl margin="normal" required fullWidth>
+            <InputLabel htmlFor="email">Email Address</InputLabel>
+            <Input
+              id="email"
+              value={this.state.email}
+              onChange={this.onChange}
+              type="text"
+              placeholder="Email Address"
+              name="email"
+              autoComplete="email"
+              autoFocus
+            />
+            </FormControl>
+            <FormControl 
+            margin="normal" 
+            required fullWidth>
+            <InputLabel 
+            htmlFor="password">Password</InputLabel>
+            <Input
+              name="password"
+              value={this.state.password}
+              onChange={this.onChange}
+              type="password"
+              placeholder="Password"
+              id="password"
+              autoComplete="current-password"/>
               </FormControl>
-              <FormControl 
-              margin="normal" 
-              required fullWidth>
-              <InputLabel 
-              htmlFor="password">Password</InputLabel>
-              <Input
-                name="password"
-                value={password}
-                onChange={this.onChange}
-                type="password"
-                placeholder="Password"
-                id="password"
-                autoComplete="current-password"/>
-                </FormControl>
-                <FormControlLabel
-                  control={<Checkbox color="primary" />}
-                  label="Remember me"
-                />
+              <FormControlLabel
+                control={<Checkbox color="primary" />}
+                label="Remember me" />
+                    
               <Button 
               fullWidth
               variant="contained"
-              disabled={isInvalid}
               color="primary"
+              id="buttonShipper"
               className={classes.submit} 
               type="submit">
                 Sign In
               </Button>
 
-              {error && <p>{error.message}</p>}
+              
           </form>
         </Paper>
       </main>
     );
   }
 }
+// const SignUpLink = () => (
+//   <p style={{textAlign:'center'}}>
+//     Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+//   </p>
+// );
 
 const SignInForm = compose(
   withRouter,
@@ -172,8 +231,5 @@ SignInForm.propTypes = {
   classes: PropTypes.object.isRequired,
 };
 
-
-
-export default SignInPage;
-
-export { SignInForm };
+export default withRouter(SignInPage);
+export {SignInForm}

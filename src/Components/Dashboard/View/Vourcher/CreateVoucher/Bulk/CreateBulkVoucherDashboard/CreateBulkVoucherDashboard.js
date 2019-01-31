@@ -62,7 +62,7 @@ class TableList extends Component {
      
     render(){
         const { classes } = this.props;
-        const { expanded,expandedb } = this.state;
+        const { expanded } = this.state;
         return(
 <div>  
         <GridContainer>

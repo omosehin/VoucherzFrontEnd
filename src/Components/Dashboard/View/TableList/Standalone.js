@@ -57,7 +57,6 @@ class StandalonTable extends Component{
           {!isLoading ?(<Table className={classes.table}>
             <TableHead>
               <TableRow style={{backgroundColor:'#972FB0',color:'white'}}>
-                <TableCell  style={{color:'white',fontSize:'15px'}}>Id</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>VoucherType</TableCell>
                 {/* <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Amount</TableCell> */}
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Start Date</TableCell>
@@ -77,7 +76,6 @@ class StandalonTable extends Component{
             
               {this.state.newUser.map(user => (
                 <TableRow key={user.merchantId}>
-                  <TableCell  style={{fontSize:'12px'}}>{user.merchantId}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
                   {/* <TableCell align="right"  style={{fontSize:'12px'}}>{user.amount}</TableCell> */}
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.startDate}</TableCell>

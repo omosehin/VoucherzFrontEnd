@@ -10,7 +10,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-import { Link, withRouter } from 'react-router-dom';
+import { Link, withRouter,Redirect} from 'react-router-dom';
 import * as ROUTES from '../../constants/routes';
 import {compose} from 'recompose';
 import AppBar from '../Navigation/AppBar';
@@ -59,64 +59,123 @@ const SignUpPage = () => (
   </div>
 );
 
-const INITIAL_STATE = {
-  firstName:'',
-  lastName:'',
-  email: '',
-  password: '',
-  companySize:"",
-  error: null,
-};
+// const INITIAL_STATE = {
+//   firstName:'',
+//   lastName:'',
+//   email: '',
+//   password: '',
+//   companySize:"",
+//   error: null,
+// };
 
 class SignUpFormBase extends Component {
   constructor(props) {
     super(props);
 
-    this.state = { ...INITIAL_STATE };
+    this.state = { 
+      firstName:'',
+      lastName:'',
+      email:'',
+      password:'',
+      comfirm_password:'',
+      companySize:'',
+      isLoggingIn: false,
+        error:'',
+        
+    };
+
+    this.onChange = this.onChange.bind(this);
+    this.onSubmit = this.onSubmit.bind(this);
+  }
+  onChange = (e) => {
+    // Because we named the inputs to match their corresponding values in state, it's
+    // super easy to update the state
+    const state = this.state
+    state[e.target.name] = e.target.value;
+    this.setState(state);
+
   }
 
 
-  onSubmit = event => {
-    event.preventDefault();
-    const {firstName,lastName,email,password,companySize  } = this.state;
-    console.log(firstName,lastName, email, password,companySize );
+  onSubmit = (e) => {
+    e.preventDefault();
+                document.getElementById("buttonShipper").innerHTML = "signing you up...";
+    // get our form data out of state
+    var apiBaseUrl = 'http://172.20.20.21:8085/api/auth/signup';
+
+    const { firstName, lastName, email,companySize, password,history} = this.state;
     
-       axios.post("http://192.168.43.245:8085/api/auth/signup",
-                  {firstName,lastName, email, password,companySize},
-                  {
-          headers: {
-                       'Content-Type': 'application/json',
-                       'Accept':'application/json',
-                 },
-                  })
-                  .then((response) => {
-                    console.log(response)
-                  })
-                  .catch((error) => console.log("Error"))
-                  
-                  };
-  onChange = event => {
-    this.setState({ [event.target.name]: event.target.value });
-  };
+    let data = {
+        firstName,
+        lastName,
+        email,
+        password,
+        companySize,
+        
+       
+    }
+
+    console.log(JSON.stringify(data));
+    
+    
+    axios.post(apiBaseUrl, data, {
+        data: JSON.stringify(data),
+        // headers: {
+        //     'Accept': 'application/json',
+        //     'Content-Type': 'application/json',
+        //     'Access-Control-Allow-Origin': '*',
+        //     'Access-Control-Allow-Credentials': true,
+        //     'Access-Control-Allow-Headers': 'Content-Type, Accept, Access-Control-Allow-Origin'
+        // }
+    }).then((response) => {
+
+        //access the results here....
+        // alert(result);
+        console.log(response);
+        //  if(response.data.result){
+            console.log(response);
+            // alert(response.data.result.message);
+            alert("Created");
+           
+             document.getElementById("buttonShipper").innerHTML = "success";
+             this.props.history.push(ROUTES.SIGN_IN)
+
+            
+        //  }
+        // else{
+        //     // alert(response.data.error.message);
+        //     document.getElementById("buttonShipper").innerHTML = "failed try again...";
+        // }
+    })
+    .catch=((error)=> {
+        alert("failed to complete");
+        document.getElementById("buttonShipper").innerHTML = "failed try again...";
+        console.log('error got' + error);
+    });   
+}
+
 
   render() {
-    const {
-      firstname,
-      lastname,
+     const {
+      firstName,
+      lastName,
       email,
       password,
+      comfirm_password,
       companySize,
       error,
-    } = this.state;
+     } = this.state;
     const { classes } = this.props;
 
 
-    const isInvalid =
-      password === '' ||
-      email === '' ||
-      firstname === '' ||
-      lastname === ''||
-      companySize ==='';
+     const isInvalid =
+       password !== comfirm_password ||
+       password === '' ||
+       firstName === '' ||
+       email=== '' ||
+       lastName === ''||
+       companySize ==='';
+       
     return (
       
       <main className={classes.main}>
@@ -135,7 +194,7 @@ class SignUpFormBase extends Component {
          <Input
          id="text"
           name="firstName"
-          value={firstname}
+          value={this.state.firstName}
           onChange={this.onChange}
           type="text"
           placeholder="First Name"
@@ -148,7 +207,7 @@ class SignUpFormBase extends Component {
       <InputLabel htmlFor="secondname">Last Name</InputLabel>
         <Input
           name="lastName"
-          value={lastname}
+          value={this.state.lastName}
           onChange={this.onChange}
           type="text"
           placeholder="Last Name"
@@ -161,75 +220,95 @@ class SignUpFormBase extends Component {
         <Input
           id="email"
           name="email"
-          value={email}
+          value={this.state.email}
           onChange={this.onChange}
           type="text"
           placeholder="Email Address"
           autoComplete="email"
           autoFocus
-        />
-        </FormControl>
-        <FormControl 
-            margin="normal" 
-           required fullWidth>
-              <InputLabel 
-              htmlFor="password">Password</InputLabel>
-        <Input
-          name="password"
-          value={password}
-          onChange={this.onChange}
-          type="password"
-          placeholder="Password"
-          autoComplete="current-password" 
-          id="password"
-        />
-        </FormControl>
-       
+          />
+          </FormControl>
+          <FormControl 
+              margin="normal" 
+             required fullWidth>
+                <InputLabel 
+                htmlFor="password">Password</InputLabel>
+          <Input
+            name="password"
+            value={this.state.password}
+            onChange={this.onChange}
+            type="password"
+            placeholder="Password"
+            autoComplete="current-password" 
+            id="password"
+          />
+          </FormControl>
 
-        <FormControl margin="normal" required fullWidth>
-      <InputLabel htmlFor="secondname">Company Size</InputLabel>
-        <Input
-          name="companySize"
-          value={companySize}
-          onChange={this.onChange}
-          type="number"
-          placeholder="Company Size"
-          autoComplete="number"
-          autoFocus
-        />
-        </FormControl>
+          <FormControl 
+              margin="normal" 
+             required fullWidth>
+                <InputLabel 
+                htmlFor="comfirm_password">Comfirm Password</InputLabel>
+          <Input
+            name="comfirm_password"
+            value={this.state.comfirm_password}
+            onChange={this.onChange}
+             type="password"
+            placeholder="Comfirm Passsword"
+            autoComplete="current-password" 
+            id="password"
+          />
+          </FormControl>
+         
+  
+          <FormControl margin="normal" required fullWidth>
+        <InputLabel htmlFor="companySize">Company Size</InputLabel>
+          <Input
+            name="companySize"
+            value={this.state.companySize}
+            onChange={this.onChange}
+            type="number"
+            placeholder="Company Size"
+            autoComplete="number"
+            autoFocus
+  
+          />
+          </FormControl>
+          
+         
+         
+          <Button 
+           type="submit"
+           fullWidth
+           variant="contained"
+           color="primary"
+           id="buttonShipper"
+           disabled={isInvalid}
+          >
+            Sign Up
+          </Button>
+  
         
-       
-       
-        <Button 
-         type="submit"
-         fullWidth
-         variant="contained"
-         color="primary"
-        disabled={isInvalid} >
-          Sign Up
-        </Button>
-
-        {error && <p>{error.message}</p>}
-      </form>
-      </Paper>
-      </main>
-    );
+        </form>
+        </Paper>
+        </main>
+      );
+    }
   }
-}
-
-const SignUpLink = () => (
-  <p style={{textAlign:'center'}}>
-    Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-  </p>
-);
-const SignUpForm = compose(
-  withRouter,
-  withStyles(styles)
-)(SignUpFormBase);
-
-  SignUpForm.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-export default SignUpPage;
-export { SignUpForm, SignUpLink };
+  
+  const SignUpLink = () => (
+    <p style={{textAlign:'center'}}>
+      Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+    </p>
+  );
+  const SignUpForm = compose(
+    withRouter,
+    withStyles(styles)
+  )(SignUpFormBase);
+  
+    SignUpForm.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+  export default (SignUpPage);
+  export { SignUpForm, SignUpLink };
+  

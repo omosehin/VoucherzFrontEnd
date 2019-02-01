@@ -77,31 +77,31 @@ class TableList extends Component {
          
         <GridContainer>
           <GridItem xs={12} sm={12} lg={12}>
-          <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
-          <ExpansionPanelSummary >
-          <GridItem xs={12} sm={12} md={12} className={classes.centerGridContent}>
-              <Card>
-                  <CardHeader className={classes.centerGridContent}>
-                      <CardIcon color="primary" style={{marginLeft:"20px"}}>
-                      <Dashboard/>
-                      </CardIcon>
-           
-                  </CardHeader>
+            <ExpansionPanel expanded={expanded === 'panel1'} onChange={this.handleChange('panel1')}>
+                <ExpansionPanelSummary >
+                    <GridItem xs={12} sm={12} md={12} className={classes.centerGridContent}>
+                        <Card>
+                            <CardHeader className={classes.centerGridContent}>
+                                <CardIcon color="primary" style={{marginLeft:"20px"}}>
+                                    <Dashboard/>
+                                </CardIcon>
+                    
+                            </CardHeader>
 
-                  <CardBody className={classes.centerGridContent}>
-                      <h2>Gift Voucher</h2>
-                      </CardBody>
-                  <CardFooter className={classes.centerGridContent}>
-                     <p className={classes.VoucherDescription}>A <b>pre-paid gift card</b>.Two types available:
-                      <b>redeemable once</b> e.g pre-paid gift cards<br/>
-                      <b>redeemable multiple times</b> against any of your product or service given a positive balance </p>
-                  </CardFooter>
-              </Card>
-          </GridItem> 
-          </ExpansionPanelSummary>
-         <ExpansionPanelDetails className={classes.Gridresponsive}>
-         <GiftVoucherForm/>        
-          </ExpansionPanelDetails>
+                            <CardBody className={classes.centerGridContent}>
+                                <h2>Gift Voucher</h2>
+                                </CardBody>
+                            <CardFooter className={classes.centerGridContent}>
+                                <p className={classes.VoucherDescription}>A <b>pre-paid gift card</b>.Two types available:
+                                <b>redeemable once</b> e.g pre-paid gift cards<br/>
+                                <b>redeemable multiple times</b> against any of your product or service given a positive balance </p>
+                            </CardFooter>
+                        </Card>
+                    </GridItem> 
+                </ExpansionPanelSummary>
+            <ExpansionPanelDetails className={classes.Gridresponsive}>
+                 <GiftVoucherForm/>        
+            </ExpansionPanelDetails>
           </ExpansionPanel>
           
           <ExpansionPanel expanded={expanded === 'panel2'}onChange={this.handleChange('panel2')}>

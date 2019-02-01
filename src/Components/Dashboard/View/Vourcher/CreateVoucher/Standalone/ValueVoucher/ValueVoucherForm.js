@@ -17,17 +17,31 @@ class ValueVoucherForm extends Component {
         voucherType:"Value",
         amount:"",
         charset: "",
-        length:"",
+        lenght:"",
+        pattern:"",
+        lengthPattern:"",
+        separator:"-",
         category:"",
         prefix:"",
         postfix:"",
-        pattern:"",
         startDate:"",
         expirationDate:"",
         additionalInfo:"",
       },
+      lengthPatterns:["Length","Pattern"],
       charsetOptions:["Numbers","Alphabet","Alphanumeric"],
+      disabled:false
+
   }
+
+  handleDisable=()=>{
+    this.setState((prevState)=>{
+      return(
+        ({disabled:!prevState.disabled})
+      );
+    })
+  }
+  
 
 
   VoucherhandleInput=(e) =>{
@@ -42,7 +56,6 @@ class ValueVoucherForm extends Component {
             [name]: value
           }
         }),
-        () => console.log(this.state.newUser)
       );
     }
   }
@@ -58,7 +71,6 @@ class ValueVoucherForm extends Component {
               [name]: value
             }
           }),
-          () => console.log(this.state.newUser)
         );
       }
       
@@ -74,7 +86,6 @@ class ValueVoucherForm extends Component {
           additionalInfo: value
         }
       }),
-      () => console.log(this.state.newUser)
     );
   }
 
@@ -93,6 +104,7 @@ class ValueVoucherForm extends Component {
       })
      
 }
+
  
 
   handleClearForm=(e)=>{
@@ -106,23 +118,27 @@ class ValueVoucherForm extends Component {
             prefix:"",
             postfix:"",
             pattern:"",
+            separator:"-",         
             startDate:"",
             expirationDate:"",
             additionalInfo:"",
+            lengthPattern:""
           }
+         
       });
   }
-
+  isFormValid = () => {
+    const { amount, prefix,length,category,postfix,startDate,expirationDate,charset} = this.state.newUser;
+  
+    return amount && prefix && length && category && postfix&&startDate &&expirationDate&& charset
+  }
 
   render(){
+
     
-    const { amount, prefix} = this.state.newUser;
-    const isEnabled =
-    amount.length < 0 &&
-    prefix.length < 0 ;
+
 
     return (
-      
           <CardBody>
     <form className="container-fluid" onSubmit={this.handleFormSubmit}>
                 <Grid container spacing={24} justify = "center">
@@ -137,6 +153,7 @@ class ValueVoucherForm extends Component {
                   >
                   </Input>
                 </Grid >
+               
                   <Grid xs={12} md={10} style={{margin:"3px"}}>
                   <Input
                     required
@@ -150,6 +167,51 @@ class ValueVoucherForm extends Component {
                   >
                   </Input>
                   </Grid >
+                  <Grid   xs={12} md={5} style={{margin:"3px"}}>
+                  <Select
+                        required={"required"}
+                        title={"length or Patterns"}
+                        name={"lengthPattern"}
+                        options={this.state.lengthPatterns}
+                        value={this.state.newUser.lengthPattern}
+                        placeholder={"Length or Pattern"}
+                        handleChange={this.VoucherDateCharsethandleInput}
+                        handClick={this.handleDisable}
+
+                        />
+                </Grid >  
+                <Grid xs={12}  md={5}  style={{margin:"3px"}}>
+                    <Input
+                         required
+                        // inputType={"number"}
+                        title={"Pattern"}
+                        name={"pattern"}
+                        value={this.state.newUser.pattern}
+                        fullWidth
+                        placeholder={"Pattern(##-####)"}
+                        handleChange={this.VoucherDateCharsethandleInput}
+                        disabled={(this.state.newUser.lengthPattern==="Pattern")? "" : "disabled"}
+
+
+                    >
+                    </Input>
+               
+                  </Grid > 
+                  <Grid xs={12} md={5}  style={{margin:"3px"}} >
+                  <Input
+                    required
+                    inputType={"number"}
+                     title={"Length"}
+                    name={"length"}
+                    value={this.state.newUser.length}
+                    fullWidth
+                    placeholder={"Enter Voucher Length"}
+                    handleChange={this.VoucherhandleInput}
+                    disabled={(this.state.newUser.lengthPattern==="Length")? "" : "disabled"}
+
+                  >
+                  </Input>
+                  </Grid > 
                   
                 <Grid   xs={12} md={5} style={{margin:"3px"}}>
                 <Select
@@ -161,19 +223,7 @@ class ValueVoucherForm extends Component {
                         handleChange={this.VoucherDateCharsethandleInput}
                         />
                 </Grid >  
-                <Grid xs={12} md={5}  style={{margin:"3px"}} >
-                  <Input
-                    required
-                    inputType={"number"}
-                     title={"Length"}
-                    name={"length"}
-                    value={this.state.newUser.length}
-                    fullWidth
-                    placeholder={"Enter Voucher Length"}
-                    handleChange={this.VoucherhandleInput}
-                  >
-                  </Input>
-                  </Grid > 
+               
                   <Grid xs={12} md={5}  style={{margin:"3px"}}>
                   <Input 
                     required={"required"}
@@ -182,7 +232,7 @@ class ValueVoucherForm extends Component {
                     name={"category"}
                     value={this.state.newUser.category}
                     fullWidth
-                    placeholder={"Enter Voucher categorye.g Valentine "}
+                    placeholder={"Enter Voucher category.g Valentine "}
                     handleChange={this.VoucherDateCharsethandleInput}
                   >
                   </Input>
@@ -215,16 +265,16 @@ class ValueVoucherForm extends Component {
                     </Input>
                
                   </Grid > 
+
+                  
+                 
                   <Grid xs={12}  md={5}  style={{margin:"3px"}}>
                     <Input
-                        required
-                        // inputType={"number"}
-                        title={"Pattern"}
-                        name={"pattern"}
-                        value={this.state.newUser.pattern}
+                    required
+                        name={"separator"}
+                        value={this.state.newUser.separator}
+                        inputType={'hidden'}
                         fullWidth
-                        placeholder={"Enter Voucher Pattern"}
-                        handleChange={this.VoucherDateCharsethandleInput}
                     >
                     </Input>
                
@@ -260,7 +310,7 @@ class ValueVoucherForm extends Component {
                   <Grid xs={12} md={10}>
                   <TextArea
                      title={"additionalInfo Information"}
-                     rows={10}
+                     rows={2}
                      value={this.state.newUser.additionalInfo}
                      name={"currentPetInfo"}
                      handleChange={this.handleTextArea}
@@ -269,16 +319,19 @@ class ValueVoucherForm extends Component {
                   </Grid>
                  
           <Grid xs={4} md={4}>
-                  <Button
-                  disabled={!isEnabled}
+                  <button
+                  disabled={!this.isFormValid}
                           action={this.handleFormSubmit}                           
-                            title={"Submit"}
-               style={buttonStyle}/>
+                            type='Submit'
+                            
+               style={buttonStyle}>
+               Submit
+                </button>
+
                 </Grid>
 
                 <Grid xs={4} md={4}>
                     <Button
-
                     action={this.handleClearForm}
                     type={"secondary"}
                     title={"Clear"}
@@ -297,6 +350,7 @@ class ValueVoucherForm extends Component {
 }
 
 export default withStyles(styles)(ValueVoucherForm);
+
 
 
 const styles = {
@@ -338,4 +392,7 @@ const styles = {
 const buttonStyle = {
    backgroundColor:"#972FAF",
    color:"white",
+   width: '81px',
+   height: '33px',
+   color: 'white',
   };

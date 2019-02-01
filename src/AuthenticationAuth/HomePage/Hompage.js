@@ -16,6 +16,7 @@ import './HomePage.css';
 import AppBar from '../Navigation/AppBar';
 
 
+
 const styles = theme => ({
   "@global": {
     body: { 
@@ -205,9 +206,12 @@ function HomePage(props) {
             </Grid>
           ))}
         </Grid>
-        <Grid container spacing={24}>
+        {/* <Grid container spacing={24}>
        
         <Grid item xs={6} lg={3} className={classes.Gridradius}>
+        <card>
+        <img src={ require('../../Components/Dashboard/assets/img/sidebar-3.jpg') } style={{width:"250px",height:"250px",borderRadius:'50%'}} />
+        </card>
         </Grid>
         <Grid item xs={6}  lg={3} className={classes.Gridradius}>
         </Grid>
@@ -215,7 +219,7 @@ function HomePage(props) {
         </Grid>
         <Grid item xs={6}  lg={3} className={classes.Gridradius}>
         </Grid>
-      </Grid>
+      </Grid> */}
       </main>
       <footer className={classNames(classes.footer, classes.layout)} >
         <Grid container spacing={32} justify="space-evenly">

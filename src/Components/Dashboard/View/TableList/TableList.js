@@ -1,7 +1,5 @@
 import React,{ Component} from "react";
-// @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-// core components
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
 import Table from "../../components/Table/Table";
@@ -50,21 +48,18 @@ class TableList extends Component{
     return (
       <div >
       <ExpansionPanel expanded={true} onChange={this.handleChange('panel1')}>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>Standalone</Typography>
-          </ExpansionPanelSummary>
-         
-         <Standalone/>        
-          
-      </ExpansionPanel>
-
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                  <Typography className={classes.heading}>Standalone</Typography>
+            </ExpansionPanelSummary>
+              <Standalone/>        
+            </ExpansionPanel>
       <ExpansionPanel expanded={true} onChange={this.handleChange('panel2')}>
-      <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-            <Typography className={classes.heading}>Bulk</Typography>
-          </ExpansionPanelSummary>
-         
-         <Bulk/>      
-          
+            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
+                <Typography className={classes.heading}>
+                  Bulk
+                </Typography>
+            </ExpansionPanelSummary>
+          <Bulk/>      
       </ExpansionPanel>
       
      

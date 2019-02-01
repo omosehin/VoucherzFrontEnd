@@ -1,5 +1,4 @@
 import React, {Component} from "react";
-// @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
 import Table from '@material-ui/core/Table';
 import TableBody from '@material-ui/core/TableBody';
@@ -22,8 +21,6 @@ class StandalonTable extends Component{
       error:null
     };
 
-    //https://css-tricks.com/using-data-in-react-with-the-fetch-api-and-axios/
-    //
 
 
         componentDidMount(){
@@ -49,7 +46,7 @@ class StandalonTable extends Component{
     render(){
         const { classes } = this.props;
         const { isLoading } = this.state;
-          
+          let i=1;
         
         return(
           <Paper className={classes.root}>
@@ -57,16 +54,16 @@ class StandalonTable extends Component{
           {!isLoading ?(<Table className={classes.table}>
             <TableHead>
               <TableRow style={{backgroundColor:'#972FB0',color:'white'}}>
+              <TableCell align="right" style={{color:'white',fontSize:'15px'}}>No</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>VoucherType</TableCell>
                 {/* <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Amount</TableCell> */}
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Start Date</TableCell>
+                <TableCell align="center" style={{color:'white',fontSize:'15px'}}>Start Date</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Expiration Date</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Voucher Code</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Status</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Category</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>value</TableCell>
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}></TableCell>
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}></TableCell>
+                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>View</TableCell>
 
 
 
@@ -76,21 +73,19 @@ class StandalonTable extends Component{
             
               {this.state.newUser.map(user => (
                 <TableRow key={user.merchantId}>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
-                  {/* <TableCell align="right"  style={{fontSize:'12px'}}>{user.amount}</TableCell> */}
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.startDate}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.expirationDate}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.code}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.status}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.category}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.value}</TableCell>
-                  <TableCell align="left"  style={{marginLeft:'-12px'}}>
+                  <TableCell align="right"  style={{fontSize:'12px'}}>{i++}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.startDate}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.expirationDate}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.code}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.status}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.category}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.value}</TableCell>
+                  <TableCell align="center"  style={{marginLeft:'-12px'}}>
                   <Button variant="contained" className={classes.button}>
-                      Enable
+                      Details
                 </Button>
-                <Button variant="contained" className={classes.button}>
-                      Update
-                </Button>
+                
                   </TableCell>
                   
                 </TableRow>
@@ -106,18 +101,19 @@ class StandalonTable extends Component{
 } 
 const styles = theme => ({
   root: {
-    width: '100%',
-    marginTop: theme.spacing.unit * 3,
-    overflowX: 'auto',
-    fontSize:20
-  },
+          width: '100%',
+          marginTop: theme.spacing.unit * 3,
+          overflowX: 'auto',
+          fontSize:20
+        },
   button: {
-    margin: theme.spacing.unit,
+          margin: theme.spacing.unit,
   },
   table: {
-    minWidth: 700,
-    fontSize:20
-  },
+          minWidth: 700,
+          fontSize:20
+  
+        },
 });
 
 

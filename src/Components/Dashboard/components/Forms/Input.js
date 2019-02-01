@@ -22,6 +22,9 @@ const Input = props => {
         display={props.display}
         hidden={props.hidden}
         validatemail={props.validatemail}
+        onClick={props.handClick}
+        onInvalid={props.onInvalid}
+
         {...props}
       />
     </div>

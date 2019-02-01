@@ -82,23 +82,7 @@ class GiftVourcherForm extends Component {
   }
 
   
-  // handleFormSubmit=(e)=>{
-  //     e.preventDefault();
-  //     let userData=[this.state.newUser]
-  //     let userBData=[this.state.voucherType];
-  //     let giftDataVoucher=userData.concat(userBData)   
-  //     console.log(giftDataVoucher);
-  //     let data=giftDataVoucher;
-     
-  //       Axios.post("http://172.20.20.17:9100/api/voucher/create",data)
-  //       .then(response=>{
-  //         console.log(response + "successful")
-  //             })   
-  //             .catch(function (error) {
-  //               console.log(error);
-  //             });
 
-  // }
   handleFormSubmit=(e)=>{
     e.preventDefault();
     let userData=this.state.newUser

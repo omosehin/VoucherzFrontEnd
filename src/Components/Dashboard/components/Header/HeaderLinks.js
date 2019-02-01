@@ -32,7 +32,7 @@ class HeaderLinks extends React.Component {
   }
 
   performSearch=(query='')=>{
-    fetch(`https://`)
+    fetch()
     .then(response=>response.json())
     .then(responseData =>{
       this.setState({

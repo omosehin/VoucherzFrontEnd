@@ -95,7 +95,7 @@ onSubmit = (e) => {
   e.preventDefault();
               document.getElementById("buttonShipper").innerHTML = "signing you in...";
   // get our form data out of state
-  var apiBaseUrl = 'http://172.20.20.21:8085/api/auth/signin';
+  var apiBaseUrl = 'http://172.20.20.21:9999/auth/signin';
 
   const {  email, password  } = this.state;
   
@@ -115,13 +115,13 @@ onSubmit = (e) => {
     //access the results here....
     // alert(result);
     // console.log(response);
-    if(response.data.result && response.data.result.accessToken){
-      sessionStorage.setItem('data',response.data.result.accessToken);
+    if(response.data && response.data.accessToken){
+      sessionStorage.setItem('data',response.data.accessToken);
       this.setState({redirectToReferrer: true});
       //  this.props.history.push({pathname: '/dashboard'})
 
         // console.log(response);
-        // alert(response.data.result.message);
+        alert(response.data.message);
         // document.getElementById("buttonShipper").innerHTML = "success";
         
     }
@@ -134,7 +134,7 @@ onSubmit = (e) => {
     alert("failed to complete");
     document.getElementById("buttonShipper").innerHTML = "failed try again2...";
     //console.log('error got' + error);
-    // this.props.history.push('/signin')
+    //this.props.history.push('/signin')
 
 });   
 }
@@ -151,10 +151,8 @@ render() {
         return (<Redirect to={'/dashboard'}/>)
     }
   
-  // const { email, password, error } = this.state;
   const { classes } = this.props;
 
-  // const isInvalid = password === '' || email === '';
 
   return (
     <main className={classes.main}>

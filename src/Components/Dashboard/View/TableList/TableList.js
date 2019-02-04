@@ -29,7 +29,7 @@ const styles =(theme)=> ({
     color: theme.palette.text.secondary,
   },
   
-});
+}); 
 
 
 
@@ -37,6 +37,13 @@ class TableList extends Component{
   state = {
     expanded: null,
   };
+
+  getRecipe=(e)=>{
+    const recipeName=e.target.elememts.recipeName.value;
+
+    e.preventDefault();
+    console.log(recipeName)
+  }
 
   handleChange = panel => (event, expanded) => {
     this.setState({
@@ -48,7 +55,6 @@ class TableList extends Component{
     const { expanded } = this.state;
     return (
       <div >
-        <TableSearch/>
       <ExpansionPanel expanded={true} onChange={this.handleChange('panel1')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography className={classes.heading}>Standalone</Typography>

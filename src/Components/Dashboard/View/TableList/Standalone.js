@@ -15,6 +15,8 @@ import axios from 'axios';
 
 
 
+
+
 class StandalonTable extends Component{
     state={
       newUser:[],
@@ -22,10 +24,10 @@ class StandalonTable extends Component{
       error:null
     };
 
-
+    
 
         componentDidMount(){
-        axios.get("http://172.20.20.17:8080/api/voucher/search/*/gift",{
+        axios.get("http://172.20.20.17:8080/api/voucher/gift/search/",{
           responseType: 'json'
       })
         .then(response=>{
@@ -50,8 +52,10 @@ class StandalonTable extends Component{
           let i=1;
         
         return(
-          <Paper className={classes.root}>
+         
 
+          <Paper className={classes.root}>
+ 
           {!isLoading ?(<Table className={classes.table}>
             <TableHead>
               <TableRow style={{backgroundColor:'#972FB0',color:'white'}}>

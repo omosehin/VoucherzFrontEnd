@@ -95,7 +95,7 @@ class GiftVourcherForm extends Component {
     e.preventDefault();
     let userData=this.state.newUser
     console.log(userData);
-    axios.post(`http://172.20.20.17:8080/api/voucher/single/gift/create`,  userData )
+    axios.post(`http://172.20.20.17:8080/api/voucher/gift/single/create`,  userData )
       .then(res => {
         console.log(res);
         console.log(res.data);

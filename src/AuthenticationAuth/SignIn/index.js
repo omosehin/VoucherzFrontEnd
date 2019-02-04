@@ -83,7 +83,7 @@ const SignInPage = () => (
   }
   onChange = (e) => {
     // Because we named the inputs to match their corresponding values in state, it's
-    // super easy to update the state
+    // super easy to update the state Voucher
     const state = this.state
     state[e.target.name] = e.target.value;
     this.setState(state);

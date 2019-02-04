@@ -10,19 +10,23 @@ import Paper from '@material-ui/core/Paper';
 import Spinner from '../../components/Spinner'
 import axios from 'axios';
 import Button from '@material-ui/core/Button';
-import  ViewsDetails from '../viewsDetails'
-
+import  ViewsDetails from '../viewsDetails';
+// import TableSearch from './TableSearch/FormSearch';
 
 
 class StandalonTable extends Component{
     state={
       newUser:[],
       isLoading:true,
-      error:null
+      error:null,
+      search:''
     };
 
-    //https://css-tricks.com/using-data-in-react-with-the-fetch-api-and-axios/
-    //
+   
+    updateSearch=e=>{
+
+      this.setState({search:e.target.value.substr(0, 20)});
+    }
 
 
         componentDidMount(){
@@ -44,15 +48,23 @@ class StandalonTable extends Component{
 
 
 
-
     render(){
         const { classes } = this.props;
         const { isLoading } = this.state;
-          
+        let filteredContacts=this.state.newUser.filter(
+          (user)=>{
+            return user.voucherType.toLowerCase().indexOf(
+              this.state.search.toLowerCase()) !==-1;
+          }
+        );
+
         
         return(
           <Paper className={classes.root}>
-
+            <input type='text'
+            value={this.state.search}
+            onChange={this.updateSearch}
+            placeholder={}/>
           {!isLoading ?(<Table className={classes.table}>
             <TableHead>
               <TableRow style={{backgroundColor:'#972FB0',color:'white'}}>
@@ -68,7 +80,7 @@ class StandalonTable extends Component{
             </TableHead>
             <TableBody>
             
-              {this.state.newUser.map(user => (
+              {filteredContacts.map(user => (
                 <TableRow key={user.merchantId}>
                 <TableCell  style={{fontSize:'12px'}}>{user.merchantId}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>

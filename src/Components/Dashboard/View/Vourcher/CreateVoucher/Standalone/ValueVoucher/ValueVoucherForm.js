@@ -7,6 +7,11 @@ import Select from "../../../../../components/Forms/Select"
 import TextArea from "../../../../../components/Forms/TextArea"
 import Button from "../../../../../components/Forms/Button"
 import axios from "axios";
+import Spinner from "../../../../../components/Spinner";
+import {withRouter,Redirect} from 'react-router-dom';
+import * as ROUTES from '../../../../../../../constants/routes';
+
+
 
 
 
@@ -30,7 +35,8 @@ class ValueVoucherForm extends Component {
       },
       lengthPatterns:["Length","Pattern"],
       charsetOptions:["Numbers","Alphabet","Alphanumeric"],
-      disabled:false
+      disabled:false,
+      isLoading:false,
 
   }
 
@@ -89,16 +95,28 @@ class ValueVoucherForm extends Component {
     );
   }
 
-  
+//   componentDidMount=()=>{
+
+
   handleFormSubmit=(e)=>{
     e.preventDefault();
+    // this.setState({
+    //   isLoading:true
+    // })
+
     let userData=this.state.newUser
     console.log(userData);
-    axios.post(`http://172.20.20.17:8080/api/voucher/single/value/create`,  userData )
+    axios.post(`http://172.20.20.17:8080/api/voucher/value/single/create`,  userData )
       .then(res => {
         console.log(res);
         console.log(res.data);
-      })
+        if(res.code==='201'){
+          this.setState({
+            isLoading:true
+          })
+        }
+           })
+     
       .catch((error)=>{
         console.log(error)
       })
@@ -106,6 +124,10 @@ class ValueVoucherForm extends Component {
 }
 
  
+// componentDidUpdate=(prevProps,prevState)=>{
+//   this.props.history.push('/table')
+
+// }
 
   handleClearForm=(e)=>{
       e.preventDefault();
@@ -134,13 +156,21 @@ class ValueVoucherForm extends Component {
   }
 
   render(){
+    // if (res.code==='201'){
 
+    // }
+
+    if (this.state.isLoading){
+      
+      return (<Redirect to={ROUTES.TABLE}/>)
+      }
     
+    const {isLoading} =this.state;
 
 
     return (
           <CardBody>
-    <form className="container-fluid" onSubmit={this.handleFormSubmit}>
+    {!isLoading?(<form className="container-fluid" onSubmit={this.handleFormSubmit}>
                 <Grid container spacing={24} justify = "center">
                 <Grid xs={12} md={5} style={{margin:"3px"}} >
                   <Input
@@ -323,6 +353,7 @@ class ValueVoucherForm extends Component {
                   disabled={!this.isFormValid}
                           action={this.handleFormSubmit}                           
                             type='Submit'
+                            id="buttonShipper"
                             
                style={buttonStyle}>
                Submit
@@ -339,8 +370,10 @@ class ValueVoucherForm extends Component {
 
                 </Grid>
         </Grid>
-        </form>
-
+        </form>):(
+          <Spinner/>
+        )
+}
         </CardBody>
      
       );
@@ -349,7 +382,7 @@ class ValueVoucherForm extends Component {
  
 }
 
-export default withStyles(styles)(ValueVoucherForm);
+export default withStyles(styles)(withRouter(ValueVoucherForm));
 
 
 

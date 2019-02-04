@@ -1,0 +1,514 @@
+import React, { Component } from 'react';
+
+import PropTypes from 'prop-types';
+import Avatar from '@material-ui/core/Avatar';
+import Button from '@material-ui/core/Button';
+import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
+import Paper from '@material-ui/core/Paper';
+import Typography from '@material-ui/core/Typography';
+import withStyles from '@material-ui/core/styles/withStyles';
+import { Link, withRouter,Redirect} from 'react-router-dom';
+import * as ROUTES from '../../constants/routes';
+import {compose} from 'recompose';
+import AppBar from '../Navigation/AppBar';
+import TextField from '@material-ui/core/TextField';
+import Grid from '@material-ui/core/Grid';
+import { signup, checkEmailAvailability } from '../Utils/index';
+import {RemoveRedEye} from '@material-ui/icons';
+import axios from 'axios';
+
+import {
+FIRSTNAME_MAX_LENGTH,FIRSTNAME_MIN_LENGTH,
+LASTNAME_MAX_LENGTH,LASTNAME_MIN_LENGTH,
+PASSWORD_MAX_LENGTH,PASSWORD_MIN_LENGTH,
+EMAIL_MAX_LENGTH
+} from '../constants';
+import { InputAdornment } from '@material-ui/core';
+const styles = theme => ({
+  container: {
+        width: 'auto',
+        display: 'block', // Fix IE 11 issue.
+        marginLeft: theme.spacing.unit * 3,
+        marginRight: theme.spacing.unit * 3,
+        [theme.breakpoints.up(400 + theme.spacing.unit * 3 * 2)]: {
+          width: 200,
+          marginLeft: 'auto',
+          marginRight: 'auto',
+        
+        },
+      },
+      eye:{
+cursor:'pointer',
+      },
+  textField: {
+    marginLeft: theme.spacing.unit,
+    marginRight: theme.spacing.unit,
+ 
+  },
+  resize:{
+textAlign:'center',
+fontSize:'15px',
+
+
+  },
+  
+  avatar: {
+        margin: theme.spacing.unit,
+        backgroundColor: theme.palette.secondary.main,
+      },
+  dense: {
+    marginTop: 16,
+  },
+  menu: {
+    width: 200,
+  },
+  submit: {
+        marginTop: theme.spacing.unit * 3,
+      },
+  paper: {
+        margin:'0 auto',
+         width:'45%',
+        marginTop: theme.spacing.unit * 5,
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        padding: `${theme.spacing.unit * 2}px ${theme.spacing.unit * 3}px ${theme.spacing.unit * 3}px`,
+        [theme.breakpoints.down('sm')]: {
+          width: `90%`,
+        },
+      },
+
+});
+
+const SignUpPage = () => (
+  <div className={styles.SignUpPage}>
+  <AppBar/>
+    <h1 style={{textAlign:'center'}}>SignUp</h1>
+     <SignUpForm/>
+  </div>
+);
+
+
+
+class SignUpFormBase extends Component {
+state = { 
+      firstName:{
+        value:''
+      },
+      lastName:{
+        value:''
+      },
+      email:{
+        value:''
+      },
+      password:{
+        value:''
+      },
+      
+      companySize:{
+        value:''
+      },
+      isLoggingIn: false,
+      passwordIsMasked:true,
+        
+    };
+
+  togglePasswordMask=()=>{
+    this.setState(prevState=>({
+      passwordIsMasked:
+      !prevState.passwordIsMasked,
+    }))
+  }
+  
+
+  validateFirstName = (firstName) => {
+    if(firstName.length < FIRSTNAME_MIN_LENGTH) {
+        return {
+            validateStatus: 'error',
+            errorMsg: `firstName is too short (Minimum ${FIRSTNAME_MIN_LENGTH} characters needed.)`
+        }
+    } else if (firstName.length > FIRSTNAME_MAX_LENGTH) {
+        return {
+            validationStatus: 'error',
+            errorMsg: `firstName is too long (Maximum ${FIRSTNAME_MAX_LENGTH} characters allowed.)`
+        }
+    } else {
+        return {
+            validateStatus: 'success',
+            errorMsg: null
+        }
+    }
+}
+validateLastName = (lastName) => {
+  if(lastName.length < LASTNAME_MIN_LENGTH) {
+      return {
+          validateStatus: 'error',
+          errorMsg: `Name is too short (Minimum ${LASTNAME_MIN_LENGTH} characters needed.)`
+      }
+  } else if (lastName.length > FIRSTNAME_MAX_LENGTH) {
+      return {
+          validationStatus: 'error',
+          errorMsg: `Name is too long (Maximum ${LASTNAME_MAX_LENGTH} characters allowed.)`
+      }
+  } else {
+      return {
+          validateStatus: 'success',
+          errorMsg: null,
+        };            
+  }
+}
+
+validatePassword = (password) => {
+  if(password.length < PASSWORD_MIN_LENGTH) {
+      return {
+          validateStatus: 'error',
+          errorMsg: `Password is too short (Minimum ${PASSWORD_MIN_LENGTH} characters needed.)`
+      }
+  } else if (password.length > PASSWORD_MAX_LENGTH) {
+      return {
+          validationStatus: 'error',
+          errorMsg: `Password is too long (Maximum ${PASSWORD_MAX_LENGTH} characters allowed.)`
+      }
+  } else {
+      return {
+          validateStatus: 'success',
+          errorMsg: null,
+      };            
+  }
+}
+
+
+
+validateEmail = (email) => {
+  if(!email) {
+      return {
+          validateStatus: 'error',
+          errorMsg: 'Email may not be empty'                
+      }
+  }
+
+  const EMAIL_REGEX = RegExp('[^@ ]+@[^@ ]+\\.[^@ ]+');
+  if(!EMAIL_REGEX.test(email)) {
+      return {
+          validateStatus: 'error',
+          errorMsg: 'Email not valid'
+      }
+  }
+
+  if(email.length > EMAIL_MAX_LENGTH) {
+      return {
+          validateStatus: 'error',
+          errorMsg: `Email is too long (Maximum ${EMAIL_MAX_LENGTH} characters allowed)`
+      }
+  }
+  
+
+  return {
+      validateStatus: null,
+      errorMsg: null
+  }
+}
+
+  handleInputChange=(event, validation)=> {
+    const target = event.target;
+    const inputName = target.name;        
+    const inputValue = target.value;
+
+    this.setState({
+        [inputName] : {
+            value: inputValue,
+            ...validation(inputValue)
+        }
+    });
+}
+
+
+//   onSubmit = (e) => {
+//     e.preventDefault();
+//     document.getElementById("buttonShipper").innerHTML = "signing you up...";
+//     var apiBaseUrl = 'http://172.20.20.21:8085/api/auth/signup';
+
+//     const { firstName, lastName, email,companySize, password} = this.state;
+    
+//     let data = {
+//         firstName,
+//         lastName,
+//         email,
+//         password,
+//         companySize,
+        
+       
+//     }
+
+//     console.log(JSON.stringify(data));
+    
+//     axios.post(apiBaseUrl, data, {
+//         data: JSON.stringify(data),
+//     }).then((response) => {
+
+//         //access the results here....
+//         // alert(result);
+//         console.log(response);
+//           if(response.data){
+//             console.log(response);
+//              alert(response.data);
+//             alert("Created");
+           
+//              document.getElementById("buttonShipper").innerHTML = "success";
+//              this.props.history.push(ROUTES.SIGN_IN)
+
+            
+//           }
+//         // else{
+//         //     // alert(response.data.error.message);
+//         //     document.getElementById("buttonShipper").innerHTML = "failed try again...";
+//         // }
+//     })
+//     .catch=((error)=> {
+//         alert("failed to complete");
+//         document.getElementById("buttonShipper").innerHTML = "failed try again...";
+//         console.log('error got' + error);
+//     });   
+// }
+
+
+onSubmit=(event)=> {
+  event.preventDefault();
+   document.getElementById("buttonShipper").innerHTML = "signing you up...";  
+       var apiBaseUrl = 'http://172.20.20.21:9999/auth/signup';
+
+   const {
+    firstName,
+    lastName,
+    email,
+    companySize,
+    password
+}=this.state
+
+let data={
+    firstName,
+    lastName,
+    email,
+    companySize,
+    password
+}
+console.log(JSON.stringify(data));
+
+ 
+    axios.post(apiBaseUrl, data, {
+        data: JSON.stringify(data),
+    }).then((response) => {
+
+        //access the results here....
+        // alert(result);
+        console.log(response);
+          if(response.data){
+            console.log(response);
+             alert(response.data);
+            alert("Created");
+           
+             document.getElementById("buttonShipper").innerHTML = "success";
+             this.props.history.push(ROUTES.SIGN_IN)
+
+            
+          }
+        // else{
+        //     // alert(response.data.error.message);
+        //     document.getElementById("buttonShipper").innerHTML = "failed try again...";
+        // }
+    })
+    .catch=((error)=> {
+        alert("failed to complete");
+        document.getElementById("buttonShipper").innerHTML = "failed try again...";
+        console.log('error got' + error);
+    }); 
+  
+}
+isFormInvalid=()=>{
+  return !(this.state.firstName.validateStatus === 'success' &&
+      this.state.lastName.validateStatus === 'success' &&
+      //  this.state.email.validateStatus === 'success' &&
+       this.state.password.validateStatus === 'success'
+  );
+}
+
+
+  render() {
+const{passwordIsMasked}=this.state
+const {password,comfirm_password} = this.state;
+    const { classes } = this.props;
+
+
+     
+   
+       
+    return (
+      <Paper className={classes.paper}>
+      <Avatar className={classes.avatar}>
+      <LockOutlinedIcon />
+     </Avatar>
+    <Typography component="h1" variant="h5">
+      Sign Up
+    </Typography>
+   <Grid spacing={24} justify = "center">
+    <form className={classes.form} onSubmit={this.onSubmit}>
+          <Grid xs={12} md={12} style={{margin:"3px"}} >
+          <TextField
+           validateStatus={this.state.firstName.validateStatus}
+          id="text"
+          
+          InputProps={{
+            classes:{
+              input:classes.resize
+            }
+          }}
+          label="First Name"
+           name="firstName"
+           value={this.state.firstName.value}
+           helperText="min of 3 max of 20"
+           onChange={(event) => this.handleInputChange(event, this.validateFirstName)}   
+           type="text"
+           placeholder="First Name"
+           autoComplete="on"
+           autoFocus
+           style={{width:350}}
+
+          />
+            </Grid>
+            <Grid xs={12} md={12} style={{margin:"3px"}} >
+          <TextField
+           validateStatus={this.state.lastName.validateStatus}
+             name="lastName"
+             value={this.state.lastName.value}
+             onChange={(event) => this.handleInputChange(event, this.validateLastName)}   
+             type="text"
+             placeholder="Last Name"
+             autoComplete="on"
+             autoFocus
+           
+             label="Last Name"
+             helperText="min of 3 max of 20"
+             InputProps={{
+               classes:{
+                 input:classes.resize
+               }
+             }}
+             style={{width:350}}
+          />
+          </Grid>
+          <Grid xs={12} md={12} style={{margin:"3px"}} >
+          <TextField
+           validateStatus={this.state.email.validateStatus}
+            id="email"
+            name="email"
+            value={this.state.email.value} 
+            onChange={(event) => this.handleInputChange(event, this.validateEmail)}  
+            type="email"
+            placeholder="Email Address"
+            autoComplete="email"
+            autoFocus
+            
+            InputProps={{
+              classes:{
+                input:classes.resize
+              }
+            }}
+            label="Email"
+            helperText="Valid email required"
+            label="Email Address"
+            size="large"
+            style={{width:350}}
+            
+
+          />
+          </Grid>
+          <Grid xs={12} md={12} style={{margin:"3px"}} >
+          <TextField
+          validateStatus={this.state.password.validateStatus}
+            name="password"
+            value={this.state.password.value} 
+            onChange={(event) => this.handleInputChange(event, this.validatePassword)} 
+            type={passwordIsMasked?'password':'text'}
+            {...this.props}
+            InputProps={{
+              
+              endAdornment:(
+                <InputAdornment position='end'>
+                  <RemoveRedEye
+                      className={classes.eye}
+                      onClick={this.togglePasswordMask}/>
+                </InputAdornment>
+              )
+            }}
+            placeholder="Password"
+            autoComplete="current-password" 
+            id="password"
+            label="Password"
+            helperText="min of 3 max of 20"
+           style={{width:350}}
+            
+           
+          />
+          
+          </Grid>
+
+          
+          <Grid xs={12} md={12} style={{margin:"3px"}} >
+          <TextField
+           name="companySize"
+           value={this.state.companySize.value} 
+           onChange={(event) => this.handleInputChange(event, this.validatePassword)} 
+           type="number"
+           placeholder="Company Size"
+           autoComplete="number"
+           autoFocus
+           label="Company Size"
+           helperText="min of 10"
+          
+          InputProps={{
+            classes:{
+              input:classes.resize
+            }
+          }}
+          style={{width:350}}
+          />
+          </Grid>
+      
+          <Button 
+           type="submit"
+           fullWidth
+           variant="contained"
+           color="primary"
+           id="buttonShipper"
+           className={classes.submit}
+           disabled={this.isFormInvalid()} 
+            >    
+            Sign Up
+          </Button>
+    </form>
+   </Grid>
+   </Paper>
+     
+     );
+    }
+  }
+     
+
+  const SignUpLink = () => (
+    <p style={{textAlign:'center'}}>
+      Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
+    </p>
+  );
+  const SignUpForm = compose(
+    withRouter,
+    withStyles(styles)
+  )(SignUpFormBase);
+  
+    SignUpForm.propTypes = {
+    classes: PropTypes.object.isRequired,
+  };
+  export default (SignUpPage);
+  export { SignUpForm, SignUpLink };
+  
+
+ 

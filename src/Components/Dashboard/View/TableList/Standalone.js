@@ -8,6 +8,7 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Spinner from '../../components/Spinner'
 import Button from '@material-ui/core/Button';
+import Details from '../viewsDetails/index'
 
 
 import axios from 'axios';
@@ -76,14 +77,23 @@ class StandalonTable extends Component{
                   <TableCell align="right"  style={{fontSize:'12px'}}>{i++}</TableCell>
                   <TableCell align="center"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
                   <TableCell align="center"  style={{fontSize:'12px'}}>{user.startDate}</TableCell>
-                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.expirationDate}</TableCell>
-                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.code}</TableCell>
+                   <TableCell align="center"  style={{fontSize:'12px'}}>{user.expirationDate}</TableCell>
+                  <TableCell align="center"  style={{fontSize:'12px'}}>{user.code.length<10 ?`${user.code}`:`${user.code.substring(0,12)}...`}</TableCell>
                   <TableCell align="center"  style={{fontSize:'12px'}}>{user.status}</TableCell>
                   <TableCell align="center"  style={{fontSize:'12px'}}>{user.category}</TableCell>
                   <TableCell align="center"  style={{fontSize:'12px'}}>{user.value}</TableCell>
                   <TableCell align="center"  style={{marginLeft:'-12px'}}>
                   <Button variant="contained" className={classes.button}>
-                      Details
+                  <Details
+                    voucherType={user.voucherType}
+                    startDate={user.startDate}
+                    expirationDate={user.expirationDate}
+                    code={user.code}
+                    status={user.status}
+                    category={user.category}
+                    value={user.value}
+                  />
+                     
                 </Button>
                 
                   </TableCell>

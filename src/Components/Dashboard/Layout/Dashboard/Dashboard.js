@@ -14,8 +14,6 @@ import dashboardStyle from "../../assets/jss/material-dashboard-react/layouts/da
 
  import image from "../../assets/img/sidebar-2.jpg";
 import logo from "../../assets/img/logo.png";
-//  import CreateBulkVoucherDashboard from "../../View/Vourcher/CreateVoucher/CreateBulkVoucherDashboard/CreateBulkVoucherDashboard";
-//  import CreateSingleVoucherDashboard from "../../View/Vourcher/CreateVoucher/CreateSingleVoucherDashboard/CreateSingleVoucherDashboard";
 
 
 const switchRoutes = (
@@ -25,8 +23,6 @@ const switchRoutes = (
         return <Redirect from={prop.path} to={prop.to} key={key} />;
       return <Route path={prop.path} component={prop.component} key={key} />;
     })}
-        {/* <Route  exact path="/Bulk" component={CreateBulkVoucherDashboard}/> */}
-        {/* <Route  exact path="/Standalone" component={CreateSingleVoucherDashboard}/> */}
 
         
   </Switch>

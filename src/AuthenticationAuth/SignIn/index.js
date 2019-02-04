@@ -78,8 +78,6 @@ const SignInPage = () => (
 
 
     };
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
 
      
   }
@@ -121,7 +119,7 @@ onSubmit = (e) => {
       //  this.props.history.push({pathname: '/dashboard'})
 
         // console.log(response);
-        alert(response.data.message);
+        //alert(response);
         // document.getElementById("buttonShipper").innerHTML = "success";
         
     }

@@ -13,6 +13,7 @@ import Typography from '@material-ui/core/Typography';
 import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
 import Standalone from "./Standalone"
 import Bulk from "./Bulk";
+import TableSearch from './TableSearch/FormSearch'
 
 const styles =(theme)=> ({
   root: {
@@ -47,6 +48,7 @@ class TableList extends Component{
     const { expanded } = this.state;
     return (
       <div >
+        <TableSearch/>
       <ExpansionPanel expanded={true} onChange={this.handleChange('panel1')}>
             <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
                   <Typography className={classes.heading}>Standalone</Typography>

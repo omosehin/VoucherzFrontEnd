@@ -15,7 +15,14 @@ import * as ROUTES from '../../constants/routes';
 import {compose} from 'recompose';
 import AppBar from '../Navigation/AppBar';
 import axios from 'axios'
-import {RemoveRedEye} from '@material-ui/icons';
+import FormHelperText from '@material-ui/core/FormHelperText';
+
+import {
+FIRSTNAME_MAX_LENGTH,FIRSTNAME_MIN_LENGTH,
+LASTNAME_MAX_LENGTH,LASTNAME_MIN_LENGTH,
+PASSWORD_MAX_LENGTH,PASSWORD_MIN_LENGTH,
+EMAIL_MAX_LENGTH
+} from '../constants';
 
 const styles = theme => ({
   main: {
@@ -60,14 +67,7 @@ const SignUpPage = () => (
   </div>
 );
 
-// const INITIAL_STATE = {
-//   firstName:'',
-//   lastName:'',
-//   email: '',
-//   password: '',
-//   companySize:"",
-//   error: null,
-// };
+
 
 class SignUpFormBase extends Component {
   constructor(props) {
@@ -82,29 +82,125 @@ class SignUpFormBase extends Component {
       companySize:'',
       isLoggingIn: false,
         error:'',
-        passwordIsMasked:true,
-
         
     };
 
-    this.onChange = this.onChange.bind(this);
-    this.onSubmit = this.onSubmit.bind(this);
   }
-  onChange = (e) => {
-    // Because we named the inputs to match their corresponding values in state, it's
-    // super easy to update the state
-    const state = this.state
-    state[e.target.name] = e.target.value;
-    this.setState(state);
+  // onChange = (e) => {
+  //   // Because we named the inputs to match their corresponding values in state, it's
+  //   // super easy to update the state
+  //   const state = this.state
+  //   state[e.target.name] = e.target.value;
+  //   this.setState(state);
 
+  // }
+
+  validateLastname = (firstName) => {
+    if(firstName.length < LASTNAME_MIN_LENGTH) {
+        return {
+            validateStatus: 'error',
+            errorMsg: `firstName is too short (Minimum ${FIRSTNAME_MIN_LENGTH} characters needed.)`
+        }
+    } else if (firstName.length > FIRSTNAME_MAX_LENGTH) {
+        return {
+            validationStatus: 'error',
+            errorMsg: `firstName is too long (Maximum ${FIRSTNAME_MAX_LENGTH} characters allowed.)`
+        }
+    } else {
+        return {
+            validateStatus: 'success',
+            errorMsg: null
+        }
+    }
+}
+validateName = (lastName) => {
+  if(lastName.length < LASTNAME_MIN_LENGTH) {
+      return {
+          validateStatus: 'error',
+          errorMsg: `Name is too short (Minimum ${LASTNAME_MIN_LENGTH} characters needed.)`
+      }
+  } else if (lastName.length > FIRSTNAME_MAX_LENGTH) {
+      return {
+          validationStatus: 'error',
+          errorMsg: `Name is too long (Maximum ${LASTNAME_MAX_LENGTH} characters allowed.)`
+      }
+  } else {
+      return {
+          validateStatus: 'success',
+          errorMsg: null,
+        };            
   }
+}
+
+validatePassword = (password) => {
+  if(password.length < PASSWORD_MIN_LENGTH) {
+      return {
+          validateStatus: 'error',
+          errorMsg: `Password is too short (Minimum ${PASSWORD_MIN_LENGTH} characters needed.)`
+      }
+  } else if (password.length > PASSWORD_MAX_LENGTH) {
+      return {
+          validationStatus: 'error',
+          errorMsg: `Password is too long (Maximum ${PASSWORD_MAX_LENGTH} characters allowed.)`
+      }
+  } else {
+      return {
+          validateStatus: 'success',
+          errorMsg: null,
+      };            
+  }
+}
+
+
+
+validateEmail = (email) => {
+  if(!email) {
+      return {
+          validateStatus: 'error',
+          errorMsg: 'Email may not be empty'                
+      }
+  }
+
+  const EMAIL_REGEX = RegExp('[^@ ]+@[^@ ]+\\.[^@ ]+');
+  if(!EMAIL_REGEX.test(email)) {
+      return {
+          validateStatus: 'error',
+          errorMsg: 'Email not valid'
+      }
+  }
+
+  if(email.length > EMAIL_MAX_LENGTH) {
+      return {
+          validateStatus: 'error',
+          errorMsg: `Email is too long (Maximum ${EMAIL_MAX_LENGTH} characters allowed)`
+      }
+  }
+  
+
+  return {
+      validateStatus: null,
+      errorMsg: null
+  }
+}
+
+  handleInputChange=(event, validationFun)=> {
+    const target = event.target;
+    const inputName = target.name;        
+    const inputValue = target.value;
+
+    this.setState({
+        [inputName] : {
+            value: inputValue,
+            ...validationFun(inputValue)
+        }
+    });
+}
 
 
   onSubmit = (e) => {
     e.preventDefault();
-                document.getElementById("buttonShipper").innerHTML = "signing you up...";
-    // get our form data out of state
-    var apiBaseUrl = 'http://172.20.20.21:9999/auth/signup';
+    document.getElementById("buttonShipper").innerHTML = "signing you up...";
+    var apiBaseUrl = 'http://172.20.20.21:8085/api/auth/signup';
 
     const { firstName, lastName, email,companySize, password,history} = this.state;
     
@@ -120,31 +216,23 @@ class SignUpFormBase extends Component {
 
     console.log(JSON.stringify(data));
     
-    
     axios.post(apiBaseUrl, data, {
         data: JSON.stringify(data),
-        // headers: {
-        //     'Accept': 'application/json',
-        //     'Content-Type': 'application/json',
-        //     'Access-Control-Allow-Origin': '*',
-        //     'Access-Control-Allow-Credentials': true,
-        //     'Access-Control-Allow-Headers': 'Content-Type, Accept, Access-Control-Allow-Origin'
-        // }
     }).then((response) => {
 
         //access the results here....
         // alert(result);
         console.log(response);
-        //  if(response.data.result){
+          if(response.data){
             console.log(response);
-            // alert(response.data.result.message);
+             alert(response.data);
             alert("Created");
            
              document.getElementById("buttonShipper").innerHTML = "success";
              this.props.history.push(ROUTES.SIGN_IN)
 
             
-        //  }
+          }
         // else{
         //     // alert(response.data.error.message);
         //     document.getElementById("buttonShipper").innerHTML = "failed try again...";
@@ -156,28 +244,35 @@ class SignUpFormBase extends Component {
         console.log('error got' + error);
     });   
 }
+isFormInvalid=()=>{
+  return !(this.state.firstName.validateStatus === 'success' &&
+      this.state.lastName.validateStatus === 'success' &&
+       this.state.email.validateStatus === 'success' &&
+       this.state.password.validateStatus === 'success'
+  );
+}
 
 
   render() {
-     const {
-      firstName,
-      lastName,
-      email,
-      password,
-      comfirm_password,
-      companySize,
-      error,
-     } = this.state;
+    //  const {
+    //   firstName,
+    //   lastName,
+    //   email,
+    //   password,
+    //   comfirm_password,
+    //   companySize,
+    //   error,
+    //  } = this.state;
     const { classes } = this.props;
 
 
-     const isInvalid =
-       password !== comfirm_password ||
-       password === '' ||
-       firstName === '' ||
-       email=== '' ||
-       lastName === ''||
-       companySize ==='';
+    //  const isInvalid =
+    //    password !== comfirm_password ||
+    //    password === '' ||
+    //    firstName === '' ||
+    //    email=== '' ||
+    //    lastName === ''||
+    //    companySize ==='';
        
     return (
       
@@ -192,63 +287,81 @@ class SignUpFormBase extends Component {
         </Typography>
       <form onSubmit={this.onSubmit} className={classes.form}>
       <FormControl margin="normal" required fullWidth>
-      <InputLabel htmlFor="firstName">First Name</InputLabel>
+     
+
+      <InputLabel htmlFor="firstName">
+      First Name
+
+      </InputLabel>
 
          <Input
+          error={this.state.firstName.errorMsg}
+
+          validateStatus={this.state.firstName.validateStatus}
          id="text"
           name="firstName"
-          value={this.state.firstName}
-          onChange={this.onChange}
+          value={this.state.firstName.value}
+          helperText="Full width!"
+          onChange={(event) => this.handleInputChange(event, this.validateName)}   
           type="text"
           placeholder="First Name"
-          autoComplete="text"
+          autoComplete="on"
           autoFocus
           
         />
         </FormControl>
         <FormControl margin="normal" required fullWidth>
+        
+
       <InputLabel htmlFor="secondname">Last Name</InputLabel>
         <Input
+        validateStatus={this.state.lastName.validateStatus}
+        error={this.state.firstName.errorMsg}
           name="lastName"
-          value={this.state.lastName}
-          onChange={this.onChange}
+          value={this.state.lastName.value}
+          onChange={(event) => this.handleInputChange(event, this.validateLastname)}   
           type="text"
-          placeholder="minimum of 3 and 20"
-          autoComplete="text"
+          placeholder="Last Name"
+          autoComplete="on"
           autoFocus
-
         />
         </FormControl>
-        <FormControl margin="normal" required fullWidth>
+        <FormControl margin="normal" fullWidth>
+       
+
         <InputLabel htmlFor="email">Email Address</InputLabel>
         <Input
+         validateStatus={this.state.email.validateStatus}
+         error={this.state.email.errorMsg}
           id="email"
           name="email"
-          value={this.state.email}
-          onChange={this.onChange}
-          type="text"
+          value={this.state.email.value} 
+          onChange={(event) => this.handleInputChange(event, this.validateEmail)}  
+          type="email"
           placeholder="Email Address"
           autoComplete="email"
           autoFocus
           />
           </FormControl>
           <FormControl 
+            
               margin="normal" 
              required fullWidth>
                 <InputLabel 
                 htmlFor="password">Password</InputLabel>
           <Input
+          validateStatus={this.state.password.validateStatus}
+          error={this.state.password.errorMsg}
             name="password"
-            value={this.state.password}
-            onChange={this.onChange}
+            value={this.state.password.value} 
+            onChange={(event) => this.handleInputChange(event, this.validatePassword)} 
+            type="password"
             placeholder="Password"
             autoComplete="current-password" 
             id="password"
-            type='password'
-           
           />
           </FormControl>
-
+{/* 
           <FormControl 
               margin="normal" 
              required fullWidth>
@@ -256,29 +369,29 @@ class SignUpFormBase extends Component {
                 htmlFor="comfirm_password">Comfirm Password</InputLabel>
           <Input
             name="comfirm_password"
-            value={this.state.comfirm_password}
-            onChange={this.onChange}
+            value={this.state.comfirm_password.value} 
+            onChange={(event) => this.handleInputChange(event, this.validatePassword)} 
              type="password"
             placeholder="Comfirm Passsword"
             autoComplete="current-password" 
             id="password"
           />
-          </FormControl>
+          </FormControl> */}
          
   
-          <FormControl margin="normal" required fullWidth>
+          {/* <FormControl margin="normal" required fullWidth>
         <InputLabel htmlFor="companySize">Company Size</InputLabel>
           <Input
             name="companySize"
-            value={this.state.companySize}
-            onChange={this.onChange}
+            value={this.state.companySize.value} 
+            onChange={(event) => this.handleInputChange(event, this.validatePassword)} 
             type="number"
             placeholder="Company Size"
             autoComplete="number"
             autoFocus
   
           />
-          </FormControl>
+          </FormControl> */}
           
          
          
@@ -288,8 +401,8 @@ class SignUpFormBase extends Component {
            variant="contained"
            color="primary"
            id="buttonShipper"
-           disabled={isInvalid}
-          >
+           disabled={this.isFormInvalid()}
+            >    
             Sign Up
           </Button>
   

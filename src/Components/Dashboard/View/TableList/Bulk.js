@@ -9,6 +9,8 @@ import TableRow from '@material-ui/core/TableRow';
 import Paper from '@material-ui/core/Paper';
 import Spinner from '../../components/Spinner'
 import axios from 'axios';
+import Button from '@material-ui/core/Button';
+import  ViewsDetails from '../viewsDetails'
 
 
 
@@ -57,9 +59,9 @@ class StandalonTable extends Component{
                 <TableCell  style={{color:'white',fontSize:'15px'}}>Dessert</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Calories</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Calories</TableCell>
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Fat (g)</TableCell>
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Carbs (g)</TableCell>
-                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Protein (g)</TableCell>
+                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Fat</TableCell>
+                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Carbs</TableCell>
+                <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Protein</TableCell>
                 <TableCell align="right" style={{color:'white',fontSize:'15px'}}>Quantity</TableCell>
 
               </TableRow>
@@ -72,8 +74,20 @@ class StandalonTable extends Component{
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.voucherType}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.startDate}</TableCell>
-                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.expirationDate}</TableCell>
+                  <TableCell align="right"  style={{fontSize:'12px'}}>{user.expirationDate.length<5 ? user.expirationDate:user.expirationDate.substring(0,6)+'...'}</TableCell>
                   <TableCell align="right"  style={{fontSize:'12px'}}>{user.status}</TableCell>
+                  <TableCell align="center"  style={{marginLeft:'-12px'}}>
+                      
+                      <ViewsDetails
+                       voucherType={user.voucherType}
+                       startDate={user.voucherType}
+                       expirationDate={user.startDate}
+                       code={user.code}
+                       status={user.status}
+                       category={user.status}
+                      />
+                
+                  </TableCell>
                 </TableRow>
               ))}
             </TableBody>

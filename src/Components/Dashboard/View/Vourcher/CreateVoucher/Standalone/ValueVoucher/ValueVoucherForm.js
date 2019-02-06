@@ -95,14 +95,39 @@ class ValueVoucherForm extends Component {
     );
   }
 
-//   componentDidMount=()=>{
+  // componentDidMount(){
+  //   if(sessionStorage.getItem('data')){
+  //     {
+  //       let user=JSON.parse(sessionStorage.getItem('data'));
+  //       console.log(user);
+  //       const token=user.data.id;
+  //       console.log(token);
+  //       axios.post(`http://172.20.20.17:8080/api/voucher/value/single/create`,
+  //         {headers:{"Authorization":`Bearer $ {token}`}}
+  //       )
+  //       .then(res=>{
+  //         console.log(res.data);
+  //         this.setState({
+  //           userData:res.data,
+  //           redirectToReferrer:false
+  //         })
+  //       })
+  //     }
+     
+  //     }
+  //     else{
+  //       this.setState({
+  //         redirectToReferrer:true
+  //       })
+  //   }
+  // }
 
 
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    // this.setState({
-    //   isLoading:true
-    // })
+    this.setState({
+      isLoading:true
+    })
 
     let userData=this.state.newUser
     console.log(userData);
@@ -112,9 +137,13 @@ class ValueVoucherForm extends Component {
         console.log(res.data);
         if(res.code==='201'){
           this.setState({
-            isLoading:true
+            isLoading:false
+
           })
+
         }
+        alert("voucher created Succesfully")
+        this.props.history.push('./table')
            })
      
       .catch((error)=>{
@@ -123,11 +152,9 @@ class ValueVoucherForm extends Component {
      
 }
 
- 
-// componentDidUpdate=(prevProps,prevState)=>{
-//   this.props.history.push('/table')
 
-// }
+ 
+
 
   handleClearForm=(e)=>{
       e.preventDefault();
@@ -160,10 +187,10 @@ class ValueVoucherForm extends Component {
 
     // }
 
-    if (this.state.isLoading){
+    // if (this.state.isLoading){
       
-      return (<Redirect to={ROUTES.TABLE}/>)
-      }
+    //   return (<Redirect to={ROUTES.TABLE}/>)
+    //   }
     
     const {isLoading} =this.state;
 

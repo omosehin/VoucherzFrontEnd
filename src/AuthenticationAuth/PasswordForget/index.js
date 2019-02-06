@@ -13,11 +13,17 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-//import { withRouter } from 'react-router-dom';
+import { withRouter } from 'react-router-dom';
 //import { compose } from 'recompose';
 //import { SignUpLink } from '../SignUp';
 // import { PasswordForgetLink } from '../PasswordForget';
 import * as ROUTES from '../../constants/routes';
+import PropTypes from 'prop-types';
+import { compose } from 'recompose';
+import axios from 'axios'
+import AppBar from '../Navigation/AppBar'
+
+
 
 
 const styles = theme => ({
@@ -43,9 +49,6 @@ const styles = theme => ({
     margin: theme.spacing.unit,
     backgroundColor: theme.palette.secondary.main,
   },
-  PasswordForget:{
-    textAlign:'center',
-  },
   form: {
     width: '100%', // Fix IE 11 issue.
     marginTop: theme.spacing.unit,
@@ -54,9 +57,9 @@ const styles = theme => ({
     marginTop: theme.spacing.unit * 3,
   },
 });
-
 const PasswordForgetPage = () => (
   <div className={styles.PasswordForget}>
+  <AppBar/>
     <h1 style={{textAlign:'center'}}>PasswordForget</h1>
     <PasswordForgetForm />
   </div>
@@ -75,20 +78,38 @@ class PasswordForgetFormBase extends Component {
   }
 
   onSubmit = event => {
-    const { email } = this.state;
-
-    this.props.firebase
-      .doPasswordReset(email)
-      .then(() => {
-        this.setState({ ...INITIAL_STATE });
-      })
-      .catch(error => {
-        this.setState({ error });
-      });
-
     event.preventDefault();
-  };
+    document.getElementById("buttonShipper").innerHTML = "Reseting Password...";
+    var apiBaseUrl = 'http://172.20.20.21:8085/password-reset/forgot';
 
+    const { email } = this.state;
+    let data={
+      email
+    }
+    console.log(JSON.stringify(data));
+    axios.post(apiBaseUrl, data, {
+      data: JSON.stringify(data),
+      
+  })
+  .then((response) => {
+      console.log(response);
+      //  if(response.data.result){
+          // alert(response.data.result.message);
+          alert("Check Email for Password reset");
+         
+           document.getElementById("buttonShipper").innerHTML = "success";
+           this.props.history.push(ROUTES.CHANGE_PASSWORD)
+  })
+  .catch=((error)=> {
+      alert("failed to complete");
+      document.getElementById("buttonShipper").innerHTML = "failed try again...";
+      console.log('error got' + error);
+     
+  });  
+
+  }
+  
+    
   onChange = event => {
     this.setState({ [event.target.name]: event.target.value });
   };
@@ -106,7 +127,7 @@ class PasswordForgetFormBase extends Component {
           <LockOutlinedIcon />
         </Avatar>
         <Typography component="h1" variant="h5">
-          Sign in
+          Forgot Password
         </Typography>
       <form className={classes.form} onSubmit={this.onSubmit}>
       <FormControl margin="normal" required fullWidth>
@@ -125,14 +146,16 @@ class PasswordForgetFormBase extends Component {
         <Button 
           fullWidth
               variant="contained"
-              disabled={isInvalid}
+              // disabled={isInvalid}
               color="primary"
               className={classes.submit}
+              id="buttonShipper"
+
           type="submit">
           Reset My Password
         </Button>
 
-        {error && <p>{error.message}</p>}
+        {/* {error && <p>{error.message}</p>} */}
       </form>
       </Paper>
       </main>
@@ -146,10 +169,16 @@ const PasswordForgetLink = () => (
     <Link to={ROUTES.PASSWORD_FORGET}>Forgot Password?</Link>
 </p>
 );
+PasswordForgetFormBase.propTypes = {
+  classes: PropTypes.object.isRequired,
+};
+
+const PasswordForgetForm=compose(
+  withRouter,
+  withStyles(styles)
+)(PasswordForgetFormBase);
 
 export default PasswordForgetPage;
-
-const PasswordForgetForm = withStyles(styles,((PasswordForgetFormBase)));
 
 
 export { PasswordForgetForm, PasswordForgetLink };

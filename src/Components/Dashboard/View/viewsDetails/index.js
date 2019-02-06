@@ -58,6 +58,9 @@ class Details extends React.Component {
         >
           <DialogTitle id="alert-dialog-slide-title">
             {"VOUCHER CODE"}
+          
+                    
+                  
           </DialogTitle>
           <DialogContent>
             <DialogContentText id="alert-dialog-slide-description">
@@ -68,9 +71,8 @@ class Details extends React.Component {
            <h6 style={{marginBottom:"20px"}}>Status: {this.props.status}</h6>
            <h6 style={{marginBottom:"20px"}}>Category: {this.props.category}</h6>
            <h6 style={{marginBottom:"20px"}}>Value: {this.props.value}</h6>
-
-
-
+           <h6 style={{marginBottom:"20px"}}>AdditionInfo: {this.props.additionInfo}</h6>
+        
             </DialogContentText>
           </DialogContent>
           

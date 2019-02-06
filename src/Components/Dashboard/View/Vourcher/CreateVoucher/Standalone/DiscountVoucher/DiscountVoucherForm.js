@@ -38,10 +38,10 @@ class DiscountVoucherForm extends Component {
       disabled:false
   }
 
-  handleDisable=()=>{
+  handleDisable=(e)=>{
     this.setState((prevState)=>{
       return(
-        ({disabled:!prevState.disabled})
+        ({disabled:!prevState.disabled & ""})
       );
     })
   }

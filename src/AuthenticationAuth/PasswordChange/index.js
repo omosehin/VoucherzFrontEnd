@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@material-ui/icons/LockOutlined';
 import Paper from '@material-ui/core/Paper';
 import Typography from '@material-ui/core/Typography';
 import withStyles from '@material-ui/core/styles/withStyles';
-//import { withRouter } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 //import { compose } from 'recompose';
 //import { SignUpLink } from '../SignUp';
 //import { PasswordForgetLink } from '../PasswordForget';

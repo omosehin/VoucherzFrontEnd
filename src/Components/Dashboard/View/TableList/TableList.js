@@ -2,18 +2,13 @@ import React,{ Component} from "react";
 import withStyles from "@material-ui/core/styles/withStyles";
 import GridItem from "../../components/Grid/GridItem";
 import GridContainer from "../../components/Grid/GridContainer";
-import Table from "../../components/Table/Table";
-import Card from "../../components/Card/Card";
-import CardHeader from "../../components/Card/CardHeader";
-import CardBody from "../../components/Card/CardBody";
-import ExpansionPanel from '@material-ui/core/ExpansionPanel';
-import ExpansionPanelDetails from '@material-ui/core/ExpansionPanelDetails';
-import ExpansionPanelSummary from '@material-ui/core/ExpansionPanelSummary';
-import Typography from '@material-ui/core/Typography';
-import ExpandMoreIcon from '@material-ui/icons/ExpandMore';
-import Standalone from "./Standalone"
-import Bulk from "./Bulk";
-import TableSearch from './TableSearch/FormSearch'
+import ValueTable from "./ValueTable"
+import DiscountTable from "./DiscountTable"
+import GiftTable from "./GiftTable.js";
+import CustomTabs from "../../components/CustomTabs/CustomTabs";
+import BugReport from "@material-ui/icons/BugReport";
+import Code from "@material-ui/icons/Code";
+import Cloud from "@material-ui/icons/Cloud";
 
 const styles =(theme)=> ({
   root: {
@@ -55,20 +50,38 @@ class TableList extends Component{
     const { expanded } = this.state;
     return (
       <div >
-      <ExpansionPanel expanded={true} onChange={this.handleChange('panel1')}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                  <Typography className={classes.heading}>Standalone</Typography>
-            </ExpansionPanelSummary>
-              <Standalone/>        
-            </ExpansionPanel>
-      <ExpansionPanel expanded={true} onChange={this.handleChange('panel2')}>
-            <ExpansionPanelSummary expandIcon={<ExpandMoreIcon />}>
-                <Typography className={classes.heading}>
-                  Bulk
-                </Typography>
-            </ExpansionPanelSummary>
-          <Bulk/>      
-      </ExpansionPanel>
+         <GridContainer>
+          <GridItem xs={12} sm={12} lg={12}>
+            <CustomTabs
+              title="CLICK VOUCHER:"
+              headerColor="primary"
+              tabs={[
+                {
+                  tabName: "Value Voucher Table",
+                  tabIcon: BugReport,
+                  tabContent: (
+                    <ValueTable/>
+                  )
+                },
+                {
+                  tabName: "Gift Voucher Table",
+                  tabIcon: Code,
+                  tabContent: (
+                    <GiftTable/> 
+                  )
+                },
+                {
+                  tabName: "Discount Voucher Table",
+                  tabIcon: Cloud,
+                  tabContent: (
+                    <DiscountTable/>
+                  )
+                }
+              ]}
+            />
+          </GridItem>
+          </GridContainer>
+     
       
      
       </div>

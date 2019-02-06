@@ -1,6 +1,5 @@
 import Dashboard from "@material-ui/icons/Dashboard";
 import Person from "@material-ui/icons/Person";
-import BubbleChart from "@material-ui/icons/BubbleChart";
 // import Notifications from "@material-ui/icons/Notifications";
 import DashboardPage from "../View/Dashboard/Dashboard";
 import TableList from "../View/TableList/TableList";
@@ -9,6 +8,8 @@ import TableList from "../View/TableList/TableList";
 import Vourcher from "../View/Vourcher/Voucher";
 import CreateBulkVoucherDashBoard from '../View/Vourcher/CreateVoucher/Bulk/CreateBulkVoucherDashboard/CreateBulkVoucherDashboard'
 import CreateSingleVoucherDashboard from '../View/Vourcher/CreateVoucher/Standalone/CreateSingleVoucherDashboard/CreateSingleVoucherDashboard'
+// import UpdateGiftVoucher from '../View/Vourcher/UpdateVoucher/UpdateGiftVoucher'
+import Redemption from '../View/Redemption/Redemption';
 
 const dashboardRoutes = [
   {
@@ -18,12 +19,20 @@ const dashboardRoutes = [
     icon: Dashboard,
     component: DashboardPage
   },
+  
   {
     path: "/voucher",
     sidebarName: "Vourcher",
     navbarName: "Voucher",
     icon: Person,
     component: Vourcher
+  },
+  {
+    path: "/redemption",
+    sidebarName: "Redemption",
+    navbarName: "Redemption",
+    icon: Dashboard,
+    component: Redemption
   },
   {
     path: "/table",
@@ -48,9 +57,6 @@ const dashboardRoutes = [
     icon: "",
     component:CreateSingleVoucherDashboard
   },
-
-
-
   
    { redirect: true, path: "/", to: "/dashboard", navbarName: "Redirect" }
 ];

@@ -115,7 +115,6 @@ class UserProfile extends Component {
                               <Export />
                           </IconButton>
                           <IconButton>
-                          <MoreVertIcon />
                         </IconButton>
             
                     </div>

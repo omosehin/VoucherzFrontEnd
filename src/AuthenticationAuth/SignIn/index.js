@@ -129,8 +129,10 @@ onSubmit = (e) => {
     //   }
 })
 .catch(function (error) {
-    alert("failed to complete");
     document.getElementById("buttonShipper").innerHTML = "failed try again2...";
+    setTimeout(document.getElementById("buttonShipper").innerHTML="signin", 2000)
+    alert("failed to complete");
+
     //console.log('error got' + error);
     //this.props.history.push('/signin')
 

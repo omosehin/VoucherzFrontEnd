@@ -123,21 +123,13 @@ class SignUpFormBase extends Component {
     
     axios.post(apiBaseUrl, data, {
         data: JSON.stringify(data),
-        // headers: {
-        //     'Accept': 'application/json',
-        //     'Content-Type': 'application/json',
-        //     'Access-Control-Allow-Origin': '*',
-        //     'Access-Control-Allow-Credentials': true,
-        //     'Access-Control-Allow-Headers': 'Content-Type, Accept, Access-Control-Allow-Origin'
-        // }
+        
     }).then((response) => {
 
         //access the results here....
         // alert(result);
         console.log(response);
-        //  if(response.data.result){
-            console.log(response);
-            // alert(response.data.result.message);
+       
             alert("Created");
            
              document.getElementById("buttonShipper").innerHTML = "success";

@@ -16,7 +16,7 @@ class DiscountVoucherForm extends Component {
       newUser:{
         discountType:"",
         voucherType: "Discount_Bulk",
-        discountValue:"",
+        unit:"",
         numberOfCodeToGenerate:"",
         percentage:"",
         amount:"",
@@ -64,10 +64,29 @@ class DiscountVoucherForm extends Component {
       let value = e.target.value;
       let name = e.target.name;
       
+      let { amount, percentage, unit } = this.state.newUser;
+      switch(value) {
+        case 'Amount':
+          percentage = '';
+          unit = '';
+          break;
+        case 'Percentage':
+          amount = '';
+          unit = '';
+          break;
+        case 'Unit':
+          amount = '';
+          percentage = '';
+          break;
+      }
+
         this.setState(
           prevState => ({
             newUser: {
               ...prevState.newUser,
+              unit,
+              amount,
+              percentage,
               [name]: value
             }
           }),
@@ -110,24 +129,28 @@ class DiscountVoucherForm extends Component {
 
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    let userData=[this.state.newUser];
+    // let userData=[this.state.newUser];
+    const { amount,percentage,unit,category,charset,length,prefix,postfix,pattern,startDate,expirationDate,additionInfo,lengthPattern} =this.state.newUser
+    const discountValue=amount||percentage||unit;
+    const RemainingValue={category,charset,length,prefix,postfix,pattern,startDate,expirationDate,additionInfo,lengthPattern};
+    const userData={...RemainingValue, discountValue};
     console.log(userData);
-    axios({
-      method:"post",
-      url:"http://172.20.20.17:8080/api/voucher/bulk/discount/create",
-      mode: 'no-cors',
-      body:JSON.stringify(userData),
-      header:{
-          'Accept':"application/json",
-          "Content-Type":"application/json"
-      }
-  })
-  .then(response=>{
-    console.log(response);
-  })
-  .catch( error=> {
-    console.log(error);
-  });
+     axios({
+     method:"post",
+       url:"http://172.20.20.17:8080/api/voucher/discount/bulk/create",
+       body:JSON.stringify(userData),
+       header:{
+           'Accept':"application/json",
+          "Content-Type":"application/json",
+          "Authorization": `Bearer ${JSON.parse(sessionStorage.getItem('data'))}
+       }
+ })
+   .then(response=>{
+     console.log(response);
+   })
+   .catch( error=> {
+     console.log(error);
+   });
 
 }
  
@@ -155,13 +178,13 @@ class DiscountVoucherForm extends Component {
 
   render(){
     
-    const { discountValue, prefix,postfix,amount,percentage} = this.state.newUser;
-    const isInvalid  =
-    discountValue===''||
-    postfix===''||
-    prefix===''||
-    amount===''||
-    percentage==='';
+    // const {amount,percentage,discountValue} = this.state.newUser;
+
+//  const discount Value=am
+
+
+
+
 
     return (
       
@@ -203,8 +226,8 @@ class DiscountVoucherForm extends Component {
                     required={"required"}
                     disabled={(this.state.newUser.discountType==="Amount")? "" : "disabled"}
                     inputType={"number"}                  
-                    title={"Discount Value"}
-                    name={"percentage"}
+                    title={"Discount Value for amount"}
+                    name={"amount"}
                     value={this.state.newUser.amount}
                     fullWidth
                     placeholder={"Voucher value in amount"}
@@ -216,13 +239,14 @@ class DiscountVoucherForm extends Component {
                   <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
                      required={"required"}
-                     disabled={(this.state.newUser.discountType==="Unit")? "" : "disabled"}
+                    disabled={(this.state.newUser.discountType==="Unit")? "" : "disabled"}
                      inputType={"number"}                  
-                    title={"Discount Value"}
-                    name={"discountValue"}
-                    value={this.state.newUser.discountValue}
+                    title={"Unit"}
+                    name={"unit"}
+
+                    value={this.state.newUser.unit}
                     fullWidth
-                    placeholder={"Enter your Voucher Value in Naira(#)"}
+                    placeholder={"Enter your Voucher Value in Unit(#)"}
                     handleChange={this.VoucherDateCharsethandleInput}
                   >
                   </Input>
@@ -375,7 +399,7 @@ class DiscountVoucherForm extends Component {
                  
           <Grid xs={4} md={4}style={{margin:"3px"}}>
                   <Button
-                  disabled={isInvalid}
+                  // disabled={isInvalid}
                           action={this.handleFormSubmit}                           
                             title={"Submit"}
                style={buttonStyle}/>

@@ -8,4 +8,6 @@ export const TABLE ='/table';
 export const ADMIN ="/Admin";
  export const BULK ='/Bulk';
 export const STANDALONE = '/Standalone';
- export const PASSWORD_FORGET ="/pw-forget";
+ export const PASSWORD_FORGET ="/forget_password";
+ export const CHANGE_PASSWORD="/Change_password"
+ export const UPDATE="/Update";

@@ -6,14 +6,9 @@ import "perfect-scrollbar/css/perfect-scrollbar.css";
 import withStyles from "@material-ui/core/styles/withStyles";
 import Header from "../../components/Header/Header";
 import Sidebar from "../../components/Sidebar/Sidebar";
-
-
 import dashboardRoutes from "../../routes/dashboard";
 
 import dashboardStyle from "../../assets/jss/material-dashboard-react/layouts/dashboardStyle";
-
- import image from "../../assets/img/sidebar-2.jpg";
-import logo from "../../assets/img/logo.png";
 
 
 const switchRoutes = (
@@ -22,9 +17,13 @@ const switchRoutes = (
       if (prop.redirect)
         return <Redirect from={prop.path} to={prop.to} key={key} />;
       return <Route path={prop.path} component={prop.component} key={key} />;
-    })}
 
-        
+    }
+
+    )}
+     
+
+    
   </Switch>
 );
 
@@ -71,8 +70,7 @@ class App extends React.Component {
         <Sidebar
           routes={dashboardRoutes}
           logoText={"Voucherz"}
-          logo={logo}
-           image={image}
+          
           handleDrawerToggle={this.handleDrawerToggle}
           open={this.state.mobileOpen}
           

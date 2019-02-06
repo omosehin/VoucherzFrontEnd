@@ -23,27 +23,27 @@ import headerLinksStyle from "../../assets/jss/material-dashboard-react/componen
 
 class HeaderLinks extends React.Component {
   state = {
-    results: [],
+   
     loading: true,
     open: false
   };
-  componentDidMount(){
-    this.performSearch();
-  }
+  // componentDidMount(){
+  //   this.performSearch();
+  // }
 
-  performSearch=(query='')=>{
-    fetch()
-    .then(response=>response.json())
-    .then(responseData =>{
-      this.setState({
-        results:responseData.results,
-        loading:false
-      });
-    })
-    .catch(error=>{
-      console.log('Error fetching and parsing data',error)
-    })
-  }
+  // performSearch=(query='')=>{
+  //   fetch()
+  //   .then(response=>response.json())
+  //   .then(responseData =>{
+  //     this.setState({
+  //       results:responseData.results,
+  //       loading:false
+  //     });
+  //   })
+  //   .catch(error=>{
+  //     console.log('Error fetching and parsing data',error)
+  //   })
+  // }
 
   handleToggle = () => {
     this.setState(state => ({ open: !state.open }));

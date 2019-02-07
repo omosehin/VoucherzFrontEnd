@@ -104,9 +104,9 @@ class SignUpFormBase extends Component {
     e.preventDefault();
                 document.getElementById("buttonShipper").innerHTML = "signing you up...";
     // get our form data out of state
-    var apiBaseUrl = 'http://172.20.20.21:9999/auth/signup';
+    var apiBaseUrl = 'http://172.20.20.21:8085/user/signup';
 
-    const { firstName, lastName, email,companySize, password,history} = this.state;
+    const { firstName, lastName, email,companySize, password} = this.state;
     
     let data = {
         firstName,
@@ -126,8 +126,7 @@ class SignUpFormBase extends Component {
         
     }).then((response) => {
 
-        //access the results here....
-        // alert(result);
+        
         console.log(response);
        
             alert("Created");
@@ -136,11 +135,7 @@ class SignUpFormBase extends Component {
              this.props.history.push(ROUTES.SIGN_IN)
 
             
-        //  }
-        // else{
-        //     // alert(response.data.error.message);
-        //     document.getElementById("buttonShipper").innerHTML = "failed try again...";
-        // }
+        
     })
     .catch=((error)=> {
         alert("failed to complete");

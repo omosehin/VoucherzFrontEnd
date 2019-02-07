@@ -7,9 +7,8 @@ import { BrowserRouter as Router,Route } from 'react-router-dom';
 import Dashboard from '../../Components/Dashboard/Layout/Dashboard/Dashboard';
 import PasswordForgetPage from '../../AuthenticationAuth/PasswordForget';
 import ChangePasswordPage from '../../AuthenticationAuth/PasswordChange';
-import UpdateGiftVoucher from '../../Components/Dashboard/View/Vourcher/UpdateVoucher/UpdateGiftVoucher'
-
-
+import NotFound from '../../AuthenticationAuth/Error/NotFound'
+import ProtectedDashboard from '../../constants/ProtectedRoute'
 class App extends Component{
 
   render(){
@@ -22,15 +21,13 @@ class App extends Component{
       <Route exact path={ROUTES.SIGN_IN} component={SignInPage} /> 
       <Route exact path={ROUTES.CHANGE_PASSWORD} component={ChangePasswordPage} /> 
       <Route exact path={ROUTES.PASSWORD_FORGET} component={PasswordForgetPage}/> 
-      <Route exact path={ROUTES.DASHBOARD} component={Dashboard} />
-      <Route exact path={ROUTES.VOUCHER} component={Dashboard} />
-      <Route exact path={ROUTES.TABLE} component={Dashboard} />
-      <Route exact path={ROUTES.BULK} component={Dashboard} />
-      <Route exact path={ROUTES.STANDALONE} component={Dashboard} />
-      <Route exact path={ROUTES.UPDATE} component={Dashboard} />
-
-
-      
+      <ProtectedDashboard exact path={ROUTES.DASHBOARD} component={Dashboard} />
+      <ProtectedDashboard exact path={ROUTES.VOUCHER} component={Dashboard} />
+      <ProtectedDashboard exact path={ROUTES.TABLE} component={Dashboard} />
+      <ProtectedDashboard exact path={ROUTES.BULK} component={Dashboard} />
+      <ProtectedDashboard exact path={ROUTES.STANDALONE} component={Dashboard} />
+      <ProtectedDashboard exact path={ROUTES.UPDATE} component={Dashboard} />
+      <Route path={ROUTES.NOTFOUND} component={NotFound} /> 
     </div>
   </Router>
     );

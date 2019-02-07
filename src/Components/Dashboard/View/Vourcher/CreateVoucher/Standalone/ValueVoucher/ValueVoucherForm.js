@@ -11,10 +11,6 @@ import Spinner from "../../../../../components/Spinner";
 import {withRouter,Redirect} from 'react-router-dom';
 import * as ROUTES from '../../../../../../../constants/routes';
 
-
-
-
-
     
 class ValueVoucherForm extends Component {
   state={
@@ -37,6 +33,7 @@ class ValueVoucherForm extends Component {
       charsetOptions:["Numbers","Alphabet","Alphanumeric"],
       disabled:false,
       isLoading:false,
+      isSession:"false"
 
   }
 
@@ -69,11 +66,21 @@ class ValueVoucherForm extends Component {
     VoucherDateCharsethandleInput=(e) =>{
       let value = e.target.value;
       let name = e.target.name;
-      
+      let { length,pattern } = this.state.newUser;
+      switch(value) {
+       case 'Length':
+          pattern = '';
+          break;
+        case 'Pattern':
+          length = '';
+          break;
+      }
         this.setState(
           prevState => ({
             newUser: {
               ...prevState.newUser,
+              length,
+              pattern,
               [name]: value
             }
           }),
@@ -95,63 +102,39 @@ class ValueVoucherForm extends Component {
     );
   }
 
-  // componentDidMount(){
-  //   if(sessionStorage.getItem('data')){
-  //     {
-  //       let user=JSON.parse(sessionStorage.getItem('data'));
-  //       console.log(user);
-  //       const token=user.data.id;
-  //       console.log(token);
-  //       axios.post(`http://172.20.20.17:8080/api/voucher/value/single/create`,
-  //         {headers:{"Authorization":`Bearer $ {token}`}}
-  //       )
-  //       .then(res=>{
-  //         console.log(res.data);
-  //         this.setState({
-  //           userData:res.data,
-  //           redirectToReferrer:false
-  //         })
-  //       })
-  //     }
-     
-  //     }
-  //     else{
-  //       this.setState({
-  //         redirectToReferrer:true
-  //       })
-  //   }
-  // }
-
-
+  //Token works manually
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    this.setState({
-      isLoading:true
-    })
+    // this.setState({
+    //   isLoading:true
+    // })
 
-    let userData=this.state.newUser
-    console.log(userData);
-    axios.post(`http://172.20.20.17:8080/api/voucher/value/single/create`,  userData )
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-        if(res.code==='201'){
-          this.setState({
-            isLoading:false
-
-          })
-
-        }
-        alert("voucher created Succesfully")
-        this.props.history.push('./table')
-           })
+const{ voucherType, category, expirationDate,startDate,charset, amount, length, prefix, pattern, postfix,additionalInfo,separator,lengthPattern} = this.state.newUser;
+   const userData = {
+    voucherType, category, expirationDate,startDate,charset, amount, length, prefix, pattern, postfix,additionalInfo,separator,lengthPattern
+   } 
+    const voucherData = JSON.stringify(userData)
+    console.log(voucherData);
+    let token = sessionStorage.getItem('data');
      
-      .catch((error)=>{
-        console.log(error)
-      })
+
+    const headers = {
+        "Content-Type": "application/json",
+         "Authorization": `Bearer ${token}`
+
+    }
+    axios.post(`http://172.20.20.17:8082/api/voucher/value/single/create`,voucherData, {"headers": headers})
+    .then(res => { 
+      alert( 'Successfully created ');
+      console.log("Succesfully Generated");
+      console.log(res)
+    })
+    .catch((error) => {
+      // alert( error + "Voucher Creation Failed")
+      console.error(error)
+    })
      
 }
-
 
  
 
@@ -336,7 +319,7 @@ class ValueVoucherForm extends Component {
                     </Input>
                
                   </Grid > 
-                  <Grid xs={12}  md={5}>
+                  <Grid xs={12}  md={5} style={{margin:"3px"}}>
                     <Input
                         required
                         inputType={"date"}
@@ -350,7 +333,7 @@ class ValueVoucherForm extends Component {
                     </Input>
                
                   </Grid > 
-                  <Grid xs={12} md={5}>
+                  <Grid xs={12} md={5} style={{margin:"3px"}}>
                     <Input
                         required
                         inputType={"date"}

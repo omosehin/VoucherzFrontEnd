@@ -11,3 +11,4 @@ export const STANDALONE = '/Standalone';
  export const PASSWORD_FORGET ="/forget_password";
  export const CHANGE_PASSWORD="/Change_password"
  export const UPDATE="/Update";
+ export const NOTFOUND="/404"

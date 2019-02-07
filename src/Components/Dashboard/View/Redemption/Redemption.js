@@ -1,159 +1,207 @@
-import React, {Component} from "react";
+import React, { Component } from "react";
+// @material-ui/core components
 import withStyles from "@material-ui/core/styles/withStyles";
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableHead from '@material-ui/core/TableHead';
-import TableRow from '@material-ui/core/TableRow';
-import Paper from '@material-ui/core/Paper';
-import Spinner from '../../components/Spinner'
-import Button from '@material-ui/core/Button';
-import Details from '../viewsDetails/index'
-import UpdategIftVoucher from '../Vourcher/UpdateVoucher/UpdateGiftVoucher'
+import Table from "@material-ui/core/Table";
+import TableBody from "@material-ui/core/TableBody";
+import TableCell from "@material-ui/core/TableCell";
+import TableHead from "@material-ui/core/TableHead";
+import TableRow from "@material-ui/core/TableRow";
+import Paper from "@material-ui/core/Paper";
+import Spinner from "../../components/Spinner";
+import axios from "axios";
+import Button from "@material-ui/core/Button";
+import ViewsDetails from "../viewsDetails";
+// import TableSearchVouchertype from './TableSearchVouchertype/FormSearchVouchertype';
+import { CSVLink,CSVDownload  } from "react-csv";
 
+class StandalonTable extends Component {
 
-import axios from 'axios';
+constructor(){
+super()
+   this.state = {
+    newUser: [],
+    isLoading: true,
+    error: null,
+    searchVouchertype: "",
+    searchStartdate: "",
+    filterData: {}
+  };
+  this.download = this.download.bind(this)
 
-
-
-
-
-class StandalonTable extends Component{
-    state={
-      newUser:[],
-      isLoading:true,
-      error:null
-    };
-
-    
-
-        componentDidMount(){
-        axios.get("http://172.20.20.17:8080/api/voucher/gift/search/",{
-          responseType: 'json'
-      })
-        .then(response=>{
-          const newUser = response.data;
-            this.setState({
-              newUser,
-              isLoading:false
-            })
-            console.log(newUser)
-        })
-        .catch(error=>this.setState({
-          error,isLoading:false
-        }));
-    }
-
-
-
-
-    render(){
-        const { classes } = this.props;
-        const { isLoading } = this.state;
-          let i=1;
-        
-        return(
-         
-
-          <Paper className={classes.root}>
+}
  
-          {!isLoading ?(<Table className={classes.table}>
+
+  updateSearchVouchertype = e => {
+    this.setState({ searchVouchertype: e.target.value.substr(0, 20) });
+  };
+
+  componentDidMount() {
+    axios
+      .get("http://demo5882170.mockable.io/create", {
+        responseType: "json"
+      })
+      .then(response => {
+        const newUser = response.data;
+        this.setState({
+          newUser,
+          isLoading: false
+        });
+        console.log(response);
+      })
+      .catch(error =>
+        this.setState({
+          error,
+          isLoading: false
+        })
+      );
+  }
+
+  ///////////////////////
+  download() {
+    this.filteredData = this.state.newUser.map(user => user);
+    this.headers = [
+      { label: "Merchant ID", key: "merchantid" },
+      { label: "Merchant ID", key: "merchantid" },
+      { label: "Voucher ID", key: "voucherType" },
+      { label:  "StartDate", key:"startDate"},
+      { label:  "ExpirationDate", key:"expirationDate"},
+      { label: "Voucher Code", key: "Code"},
+      { label:  "Status", key:"Status"},
+      { label:  "Category", key:"category"},
+
+
+    ];
+
+    return <CSVLink data={this.filteredData}>Download me</CSVLink>;
+  }
+  //////////////////////////////////
+
+  render() {
+    const { classes } = this.props;
+    const { isLoading } = this.state;
+    let i=1;
+    let filteredvoucherType = this.state.newUser.filter(user => {
+      return (
+        user.voucherType
+          .toLowerCase()
+          .indexOf(this.state.searchVouchertype.toLowerCase()) !== -1
+      );
+    });
+
+    return (
+      <Paper className={classes.root}>
+        <input
+          type="text"
+          value={this.state.searchVouchertype}
+          onChange={this.updateSearchVouchertype}
+          placeholder={"VoucherType"}
+        />
+
+        {!isLoading ? (
+          <Table className={classes.table}>
             <TableHead>
-              <TableRow style={{backgroundColor:'#972FB0',color:'white'}}>
-              <TableCell align="right" style={{color:'white',fontSize:'15px',display:'none'}}>
-                No
-              </TableCell>
-              <TableCell 
-                align="right" 
-                style={{color:'white',fontSize:'15px',display:'none'}}>
-                VoucherType
-              </TableCell>
-              <TableCell
-                  align="center" 
-                  style={{color:'white',fontSize:'15px'}}>
+              <TableRow style={{ color: "Purple" }}>
+                <TableCell style={{ color: "purple", fontSize: "15px" }}>
+                  No
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
+                  VoucherType
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
                   Start Date
-              </TableCell>
-              <TableCell 
-                  align="right" 
-                  style={{color:'white',fontSize:'15px'}}>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
                   Expiration Date
-              </TableCell>
-              <TableCell 
-                  align="right" 
-                  style={{color:'white',fontSize:'15px'}}>
-                 Code
-              </TableCell>
-              <TableCell 
-                  align="right"
-                  style={{color:'white',fontSize:'15px'}}>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
+                 Voucher Code
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
                   Status
-              </TableCell>
-              <TableCell 
-                align="right" 
-                style={{color:'white',fontSize:'15px'}}>
-                Category
-              </TableCell>
-              <TableCell
-                align="right"
-                style={{color:'white',fontSize:'15px'}}>
+                </TableCell>
+                <TableCell
+                  align="center"
+                  style={{ color: "purple", fontSize: "15px", display:"none" }}
+                >
+                  Category
+                </TableCell>
+                <TableCell
+                align="center"
+                style={{color:'purple',fontSize:'15px'}}>
                 Value
               </TableCell>
               <TableCell
-                align="right"
-                style={{color:'white',fontSize:'15px'}}>
+                align="center"
+                style={{color:'purple',fontSize:'15px'}}>
                 More Info
               </TableCell>
-              <TableCell
-                align="right"
-                style={{color:'white',fontSize:'15px'}}>
-                View
-              </TableCell>
-              <TableCell 
-                align="right" 
-                style={{color:'white',fontSize:'15px'}}>
-                CSV
-              </TableCell>
-
+                <TableCell
+                  align="left"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
+                  CSV
+                </TableCell>
+                <TableCell
+                  align="left"
+                  style={{ color: "purple", fontSize: "15px" }}
+                >
+                  View
+                </TableCell>
+                
               </TableRow>
-            </TableHead> 
+            </TableHead>
+
             <TableBody>
-            
-              {this.state.newUser.map(user => (
+              {filteredvoucherType.map(user => (
                 <TableRow key={user.merchantId}>
-                  <TableCell 
-                    align="right"  
-                    style={{fontSize:'12px'}}>
+                  <TableCell style={{ fontSize: "12px" }}>
                     {i++}
                   </TableCell>
                   <TableCell 
                     align="center" 
-                    style={{fontSize:'12px'}}>
+                    style={{ fontSize: "12px" }}>
                     {user.voucherType}
                   </TableCell>
+                  
                   <TableCell 
-                    align="center"  
-                    style={{fontSize:'12px'}}>
+                    align="center" 
+                    style={{ fontSize: "12px" }}>
                     {user.startDate}
                   </TableCell>
                   <TableCell 
+                    align="right"  
+                    style={{fontSize:'12px'}}>
+                    {user.expirationDate.length<5 ? user.expirationDate:user.expirationDate.substring(0,6)+'...'}
+                  </TableCell>
+                  
+                  <TableCell 
+                    align="right"  
+                    style={{fontSize:'12px'}}>
+                    {user.Code.length<10 ? user.Code:user.Code.substring(0,12)+'...'}
+                  </TableCell>
+                  <TableCell 
                    align="center" 
-                   style={{fontSize:'12px'}}>
-                   {user.expirationDate}
-                   </TableCell>
-                  <TableCell 
-                    align="center"  
-                    style={{fontSize:'12px'}}>
-                    {user.code.length<10 
-                      ?`${user.code}`:`${user.code.substring(0,12)}...`}
+                    style={{ fontSize: "12px" }}>
+                    {user.Status}
                   </TableCell>
-                  <TableCell 
-                    align="center" 
-                    style={{fontSize:'12px'}}>
-                    {user.status}
-                  </TableCell>
-                  <TableCell 
-                    align="center" 
-                    style={{fontSize:'12px'}}>
+                  <TableCell
+                     align="center" 
+                     style={{ fontSize: "12px",display:"none"}}>
                     {user.category}
                   </TableCell>
                   <TableCell align="center"
@@ -161,58 +209,46 @@ class StandalonTable extends Component{
                     {user.value}
                   </TableCell>
                   <TableCell 
-                    align="right" 
+                    align="center" 
                     style={{ fontSize: "12px" }}>
                     {user.additionInfo.length < 5
                       ? user.additionInfo
                       : user.additionInfo.substring(0, 6) + "..."}
                   </TableCell>
-                  <TableCell 
-                    align="center"  
-                    style={{marginLeft:'-12px'}}>
-                  <Button variant="contained" className={classes.button}>
-                    <Details
+                  <TableCell align="left">
+                  </TableCell>
+                  <TableCell align="left">
+                    <ViewsDetails
                       voucherType={user.voucherType}
-                      startDate={user.startDate}
-                      expirationDate={user.expirationDate}
+                      startDate={user.voucherType}
+                      expirationDate={user.startDate}
                       code={user.code}
                       status={user.status}
                       category={user.category}
-                      value={user.value}
-                  />
-                 </Button>
-                </TableCell>
-                  
-               
+                      additionInfo={user.additionInfo}
+                    />
+                  </TableCell>
+                 
                 </TableRow>
               ))}
             </TableBody>
-          </Table>) : (
-          <Spinner/>)}
-        </Paper>
-    
-        );
-    }
-} 
+          </Table>
+        ) : (
+          <Spinner />
+        )}
+      </Paper>
+    );
+  }
+}
 const styles = theme => ({
   root: {
-          width: '100%',
-          marginTop: theme.spacing.unit * 3,
-          overflowX: 'auto',
-          fontSize:20
-        },
-  button: {
-          margin: theme.spacing.unit,
+    width: "100%",
+    marginTop: theme.spacing.unit * 3,
+    overflowX: "auto"
   },
   table: {
-          minWidth: 700,
-          fontSize:20
-  
-        },
+    minWidth: 700
+  }
 });
 
-
-
-
-export default withStyles(styles)(StandalonTable)
-  
+export default withStyles(styles)(StandalonTable);

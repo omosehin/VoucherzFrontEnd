@@ -19,6 +19,7 @@ import { SignUpLink } from '../SignUp';
 import { PasswordForgetLink } from '../PasswordForget';
 import * as ROUTES from '../../constants/routes';
 import AppBar from '../Navigation/AppBar'
+import NotFound from '../Error/NotFound';
 
 const styles = theme => ({
   main: {
@@ -72,11 +73,15 @@ const SignInPage = () => (
  class SignInFormBase extends Component {
   constructor(props) {
     super(props);
-    this.state = { 
-      email:"",
-      password:'',
+    this.state = {
+      newUser:{
+        email:"",
+        password:'',
+      } ,
+      isWrong:false,
+      isLoading: true,
 
-
+   
     };
 
      
@@ -84,7 +89,7 @@ const SignInPage = () => (
   onChange = (e) => {
     // Because we named the inputs to match their corresponding values in state, it's
     // super easy to update the state Voucher
-    const state = this.state
+    const state = this.state.newUser
     state[e.target.name] = e.target.value;
     this.setState(state);
 }
@@ -93,9 +98,9 @@ onSubmit = (e) => {
   e.preventDefault();
               document.getElementById("buttonShipper").innerHTML = "signing you in...";
   // get our form data out of state
-  var apiBaseUrl = 'http://172.20.20.21:9999/auth/signin';
+  var apiBaseUrl = 'http://172.20.20.21:8072/user/signin';
 
-  const {  email, password  } = this.state;
+  const {  email, password  } = this.state.newUser;
   
   let data = {
       email,
@@ -103,38 +108,28 @@ onSubmit = (e) => {
   }
 
   console.log(JSON.stringify(data));
-  
-  
   axios.post(apiBaseUrl, data, {
       data: JSON.stringify(data),
            
-  }).then((response) => {
+  })
 
-    //access the results here....
-    // alert(result);
-    // console.log(response);
+  .then((response) => {
     if(response.data && response.data.accessToken){
       sessionStorage.setItem('data',response.data.accessToken);
       this.setState({redirectToReferrer: true});
-      //  this.props.history.push({pathname: '/dashboard'})
-
-        // console.log(response);
-        //alert(response);
-        // document.getElementById("buttonShipper").innerHTML = "success";
-        
+     
     }
-    // else{
-    //     //alert(response.data);
-    //     document.getElementById("buttonShipper").innerHTML = "failed try again1..."
-    //   }
+    
+    
 })
 .catch(function (error) {
+  if(error.code === "404"){
+    this.setState({isLoading: true})
+  }
     document.getElementById("buttonShipper").innerHTML = "failed try again2...";
     setTimeout(document.getElementById("buttonShipper").innerHTML="signin", 2000)
-    alert("failed to complete");
-
-    //console.log('error got' + error);
-    //this.props.history.push('/signin')
+    alert( error + "failed to complete");
+    console.log(error);
 
 });   
 }
@@ -155,6 +150,7 @@ render() {
 
 
   return (
+    
     <main className={classes.main}>
       <CssBaseline />
 
@@ -165,6 +161,7 @@ render() {
         <Typography component="h1" variant="h5">
           Sign in
         </Typography>
+         {this.state.isWrong? <NotFound/>:null} 
         <form className={classes.form} onSubmit={this.onSubmit}>
           <FormControl margin="normal" required fullWidth>
             <InputLabel htmlFor="email">Email Address</InputLabel>
@@ -214,11 +211,7 @@ render() {
     );
   }
 }
-// const SignUpLink = () => (
-//   <p style={{textAlign:'center'}}>
-//     Don't have an account? <Link to={ROUTES.SIGN_UP}>Sign Up</Link>
-//   </p>
-// );
+
 
 const SignInForm = compose(
   withRouter,

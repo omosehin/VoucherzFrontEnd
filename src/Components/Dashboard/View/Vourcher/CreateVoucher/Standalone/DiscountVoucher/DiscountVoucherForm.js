@@ -18,10 +18,11 @@ class DiscountVoucherForm extends Component {
       newUser:{
         discountType:"",
         voucherType: "Discount",
-        discountValue:"",
+        unit:"",
+        percentage:"",
+        amount:"",
         category:"",
         separator:"-",
-        amount:"",
         charset: "",
         length:"",
         lengthPattern:"",
@@ -65,35 +66,63 @@ class DiscountVoucherForm extends Component {
   }
 
 
-  // VoucherPercenthandleInput=(e) =>{
-  //   let value = e.target.value;
-  //   let name = e.target.name;
-  //   const validateinput = /^[1-9]$|^[1-9][0-9]$|^(100)$/;
-  //   if (e.target.value === "" || validateinput.test(e.target.value)){
-  //     this.setState(
-  //       prevState => ({
-  //         newUser: {
-  //           ...prevState.newUser,
-  //           [name]: value
-  //         }
-  //       }),
-  //       () => console.log(this.state.newUser)
-  //     );
-  //   }
-  // }
+  VoucherPercenthandleInput=(e) =>{
+    let value = e.target.value;
+    let name = e.target.name;
+    const validateinput = /^[1-9]$|^[1-9][0-9]$|^(100)$/;
+    if (e.target.value === "" || validateinput.test(e.target.value)){
+      this.setState(
+        prevState => ({
+          newUser: {
+            ...prevState.newUser,
+            [name]: value
+          }
+        }),
+        () => console.log(this.state.newUser)
+      );
+    }
+  }
+
     
     VoucherDateCharsethandleInput=(e) =>{
       let value = e.target.value;
       let name = e.target.name;
       
+      let { amount, percentage, unit,length,pattern } = this.state.newUser;
+      switch(value) {
+        case 'Amount':
+          percentage = '';
+          unit = '';
+          break;
+        case 'Percentage':
+          amount = '';
+          unit = '';
+          break;
+        case 'Unit':
+          amount = '';
+          percentage = '';
+          break;
+          case 'Length':
+          pattern = '';
+          break;
+        case 'Pattern':
+        length = '';
+          break;
+      }
+
+
         this.setState(
           prevState => ({
             newUser: {
               ...prevState.newUser,
+              unit,
+              amount,
+              percentage,
+              length,
+              pattern,
               [name]: value
             }
           }),
-          () => console.log(this.state.newUser)
         );
       }
       
@@ -109,23 +138,41 @@ class DiscountVoucherForm extends Component {
           additionInfo: value
         }
       }),
-      () => console.log(this.state.newUser)
     );
   }
 
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    let userData=this.state.newUser
-    console.log(userData);
-    axios.post(`http://172.20.20.17:8080/api/voucher/single/discount/create`,  userData )
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
-      .catch((error)=>{
-        console.log(error)
-      })
+    // let userData=[this.state.newUser];
+    const { amount,percentage,unit,category,charset,length,prefix,postfix,pattern,startDate,expirationDate,additionInfo,lengthPattern} =this.state.newUser
+    const discountValue=amount||percentage||unit;
+    const RemainingValue={category,charset,length,prefix,postfix,pattern,startDate,expirationDate,additionInfo,lengthPattern};
+    const userData={...RemainingValue, discountValue};
      
+    console.log(userData);
+    const voucherData = JSON.stringify(userData)
+    console.log(voucherData);
+    //let user = JSON.parse(sessionStorage.getItem('data'));
+    //const token = user.data.id;
+
+    const headers = {
+        "Content-Type": "application/json",
+        //  "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb3lAZ21haWwuY29tIiwiaWF0IjoxNTQ5NTE3MDUxLCJleHAiOjE1NDk1MTgwNTF9.lnwYO5kVuLD-SyyRTYt_iVmBprmIbrDDuMQ7hYyQSPMexJJZcwnUp1m-k46FxxoOihp2P7Y-micDKp1_IQOSyw"
+       // "Authorization": `Bearer ${token}`
+
+    }
+    axios.post(`http://172.20.20.17:8080/api/voucher/discount/single/create`,voucherData, {"headers": headers})
+    .then(res => {
+      alert( 'Successfully created with code ' + res.data.code);
+      console.log("Succesfully Generated")
+    })
+    .catch((error) => {
+      alert( error + "Voucher Creation Failed")
+      console.log(error)
+      
+    })
+     
+
 }
   
 onChange = event => {
@@ -194,19 +241,19 @@ onChange = event => {
                   <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
                       required={"required"}
-                    // disabled={(this.state.newUser.discountType==="Percentage")? "" : "disabled"}
+                    disabled={(this.state.newUser.discountType==="Percentage")? "" : "disabled"}
                     inputType={"number"}                  
-                    title={"Discount Value"}
-                    name={"discountValue"}
-                    value={this.state.newUser.discountValue}
-                    valid={this.state.voucherType === "percentage" ? this.validateEmail : ""}
+                    title={"Discount Value in Percentage"}
+                    name={"percentage"}
+                    value={this.state.newUser.percentage}
+                    // valid={this.state.voucherType === "percentage" ? this.validateEmail : ""}
                     fullWidth
                     placeholder={"1-100%"}
-                    handleChange= {this.VoucherhandleInput}
+                    handleChange= {this.VoucherPercenthandleInput}
                   >
                   </Input>
                   </Grid >
-                  {/* <Grid xs={12} md={5} style={{margin:"3px"}}>
+                   <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
                     required={"required"}
                     disabled={(this.state.newUser.discountType==="Amount")? "" : "disabled"}
@@ -219,22 +266,24 @@ onChange = event => {
                     handleChange={this.VoucherhandleInput}
                   >
                   </Input>
-                  </Grid > */}
-{/* 
+                  </Grid > 
                   <Grid xs={12} md={5} style={{margin:"3px"}}>
                   <Input
                      required={"required"}
-                     disabled={(this.state.newUser.discountType==="Unit")? "" : "disabled"}
+                    disabled={(this.state.newUser.discountType==="Unit")? "" : "disabled"}
                      inputType={"number"}                  
-                    title={"Discount Voucher Value for unit"}
-                    name={"discountValue"}
-                    value={this.state.newUser.discountValue}
+                    title={"Unit"}
+                    name={"unit"}
+
+                    value={this.state.newUser.unit}
                     fullWidth
-                    placeholder={"Enter your Voucher Value in Naira(#)"}
-                    handleChange={this.VoucherhandleInput}
+                    placeholder={"Enter your Voucher Value in Unit(#)"}
+                    handleChange={this.VoucherDateCharsethandleInput}
                   >
                   </Input>
-                  </Grid > */}
+                  </Grid >
+ 
+                 
                   
                 <Grid   xs={12} md={5} style={{margin:"3px"}}>
                 <Select
@@ -348,7 +397,7 @@ onChange = event => {
                     </Input>
                
                   </Grid > 
-                  <Grid xs={12}  md={5}>
+                  <Grid xs={12}  md={10}>
                     <Input
                     required={"required"}
                     inputType={"date"}
@@ -362,7 +411,7 @@ onChange = event => {
                     </Input>
                
                   </Grid > 
-                  <Grid xs={12} md={5}>
+                  <Grid xs={12} md={10}>
                     <Input
                     required={"required"}
                     inputType={"date"}

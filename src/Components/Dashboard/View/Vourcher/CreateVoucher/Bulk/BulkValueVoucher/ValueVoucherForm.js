@@ -62,10 +62,22 @@ class ValueVoucherForm extends Component {
     VoucherDateCharsethandleInput=(e) =>{
       let value = e.target.value;
       let name = e.target.name;
+      let { length,pattern } = this.state.newUser;
+      switch(value) {
+       case 'Length':
+          pattern = '';
+          break;
+        case 'Pattern':
+          length = '';
+          break;
+      }
+
         this.setState(
           prevState => ({
             newUser: {
               ...prevState.newUser,
+              length,
+              pattern,
               [name]: value
             }
           }),
@@ -88,20 +100,46 @@ class ValueVoucherForm extends Component {
   }
 
   
+  //Token works manually
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    let userData=this.state.newUser
+    // this.setState({
+    //   isLoading:true
+    // })
+
+const{ voucherType, category, expirationDate,startDate,charset, amount, length, prefix, pattern, numberOfCodeToGenerate,postfix,additionalInfo,separator,lengthPattern} = this.state.newUser;
+   const userData = {
+    voucherType, category, expirationDate,startDate,charset, amount, length, prefix, pattern,numberOfCodeToGenerate, postfix,additionalInfo,separator,lengthPattern
+   } 
     console.log(userData);
-    axios.post(`http://172.20.20.17:8080/api/voucher/bulk/value/create`,  userData )
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-      })
-      .catch((error)=>{
-        console.log(error)
-      })
+    const voucherData = JSON.stringify(userData)
+    console.log(voucherData);
+    // let user = JSON.parse(sessionStorage.getItem('data'));
+    // const token = user.data.id;
+
+    const headers = {
+        "Content-Type": "application/json",
+         "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb3lAZ21haWwuY29tIiwiaWF0IjoxNTQ5NTMzNzUwLCJleHAiOjE1NDk1MzQ3NTB9.YkLXH0bqYU0EGtJYaWUYsFSg-srlDapsC_hKTCAGMwFIglstNbhLlUW_f-zXQ3EXy7ibQ7vP-NVghU8SpiasWg"
+        // "Authorization": `Bearer ${token}`
+
+    }
+    axios.post(`  http://172.20.20.17:8080/api/voucher/bulk/value/create
+    `,voucherData, {"headers": headers})
+    .then((res)=>{
+      console.log(res);
+      if(res.data.code === "CREATED"){
+        alert("Voucher Created Succesfully")
+      }
+      else if(res.code === 409){
+        alert("");
+      } 
+    })
+    .catch((error) => {
+      alert("Voucher Creation Failed")
+    })
      
 }
+
  
 
   handleClearForm=(e)=>{
@@ -149,7 +187,7 @@ class ValueVoucherForm extends Component {
                     readonly={'readonly'}
                   >
                   </Input>
-                  <Grid xs={12} md={5} style={{margin:"3px"}}>
+                  <Grid xs={12} md={10} style={{margin:"3px"}}>
                   <Input
                     required
                     inputType={"number"}                  
@@ -187,7 +225,7 @@ class ValueVoucherForm extends Component {
                         handleChange={this.VoucherDateCharsethandleInput}
                         />
                 </Grid >
-                <Grid   xs={12} md={5} style={{margin:"3px"}}>
+                <Grid   xs={12} md={10} style={{margin:"3px"}}>
                   <Select
                         required={"required"}
                         title={"length or Patterns"}

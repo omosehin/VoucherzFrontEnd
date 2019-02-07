@@ -62,6 +62,7 @@ class Standalone extends Component {
           <GridItem xs={12} sm={12} md={12}>
           <CardHeader color="primary" style={{marginBottom:"20px"}}>
             <h1 style={{color:'white'}}>Create Single Voucher</h1>
+          <p>Click to generate Voucher</p>
           </CardHeader>
          
           </GridItem>

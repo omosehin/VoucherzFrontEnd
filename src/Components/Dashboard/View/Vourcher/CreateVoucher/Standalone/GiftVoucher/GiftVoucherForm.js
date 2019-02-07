@@ -65,10 +65,23 @@ class GiftVourcherForm extends Component {
       let value = e.target.value;
       let name = e.target.name;
       
+      let {length,pattern } = this.state.newUser;
+      switch(value) {
+       
+          case 'Length':
+          pattern = '';
+          break;
+        case 'Pattern':
+        length = '';
+          break;
+      }
+
         this.setState(
           prevState => ({
             newUser: {
               ...prevState.newUser,
+              length,
+              pattern,
               [name]: value
             }
           }),
@@ -90,20 +103,41 @@ class GiftVourcherForm extends Component {
     );
   }
 
- 
+  
+
   handleFormSubmit=(e)=>{
     e.preventDefault();
-    let userData=this.state.newUser
+    const{ voucherType, category, 
+            expirationDate,startDate,charset, 
+            value, length, prefix, pattern, 
+            postfix,additionalInfo,separator,
+            lengthPattern} = this.state.newUser;
+
+
+    let userData={voucherType,value, category, expirationDate,startDate,charset, length, prefix, pattern, postfix,additionalInfo,separator,lengthPattern
+
+    } 
     console.log(userData);
-    axios.post(`http://172.20.20.17:8080/api/voucher/gift/single/create`,  userData )
-      .then(res => {
-        console.log(res);
-        console.log(res.data);
-        alert('Gift Voucher  created with Voucher Code' + userData.Code )
-      })
-      .catch((error)=>{
-        console.log(error)
-      })
+    const voucherData = JSON.stringify(userData)
+    console.log(voucherData);
+    let user = sessionStorage.getItem('data');
+    const token = user.data;
+
+   const headers = {
+       "Content-Type": "application/json",
+         // "Authorization": "Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJqb3lAZ21haWwuY29tIiwiaWF0IjoxNTQ5NTM3OTAxLCJleHAiOjE1NDk1Mzg5MDF9.aUzY60QAzvHeUqGIuwxM718OSDAxFxWueeYl19WoW1L7r1cy9A4EqrOYu_IxoiaxkCYN40GYHY2-s9D48LzoKw"
+       "Authorization": `Bearer ${token}`
+
+   }
+   axios.post(`http://172.20.20.17:8080/api/voucher/gift/single/create`,voucherData, {"headers": headers})
+   .then(res => {
+     alert( 'Successfully created with code ' + res.data.code);
+     console.log("Succesfully Generated")
+   })
+   .catch((error) => {
+     alert( error + " Voucher Creation Failed ")
+     
+   })
      
 }
 

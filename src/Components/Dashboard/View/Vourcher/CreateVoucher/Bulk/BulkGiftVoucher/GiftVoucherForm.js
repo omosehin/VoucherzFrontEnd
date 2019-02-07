@@ -65,11 +65,21 @@ class GiftVourcherForm extends Component {
     VoucherDateCharsethandleInput=(e) =>{
       let value = e.target.value;
       let name = e.target.name;
-      
+      let { length,pattern } = this.state.newUser;
+      switch(value) {
+       case 'Length':
+          pattern = '';
+          break;
+        case 'Pattern':
+          length = '';
+          break;
+      }
         this.setState(
           prevState => ({
             newUser: {
               ...prevState.newUser,
+              length,
+              pattern,
               [name]: value
             }
           }),
@@ -316,7 +326,7 @@ class GiftVourcherForm extends Component {
                   <Grid xs={12} md={10}>
                   <TextArea
                      title={"additionalInfo Information"}
-                     rows={10}
+                     rows={2}
                      value={this.state.newUser.additionalInfo}
                      name={"currentPetInfo"}
                      handleChange={this.handleTextArea}
